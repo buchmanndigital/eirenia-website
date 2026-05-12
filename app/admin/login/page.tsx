@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { COACH_REGISTER } from "@/lib/coach-public-paths";
 import { hasDatabase } from "@/lib/db/connection";
 import { loginAction } from "../actions";
 
@@ -14,7 +15,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <div className="admin-auth-card">
         <Link href="/" className="admin-brand centered">
           EIRENIA
-          <span>Coach & Admin Login</span>
+          <span>Zugang für Coaches & Team</span>
         </Link>
         <h1>Anmelden</h1>
         <p>
@@ -26,9 +27,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         )}
         {!hasDatabase && (
           <div className="admin-alert">
-            Es ist noch keine Vercel Postgres/Neon-Datenbank verbunden. Der
-            Admin-Login wird aktiv, sobald die Datenbank-Umgebungsvariablen im
-            Vercel-Projekt gesetzt sind.
+            Es ist noch keine Vercel Postgres/Neon-Datenbank verbunden. Die Anmeldung
+            wird aktiv, sobald die Datenbank-Umgebungsvariablen im Vercel-Projekt
+            gesetzt sind.
           </div>
         )}
         <form action={loginAction} className="admin-form">
@@ -44,7 +45,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Einloggen
           </button>
         </form>
-        <Link href="/admin/register" className="admin-link">
+        <Link href={COACH_REGISTER} className="admin-link">
           Als Coach registrieren
         </Link>
       </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { COACH_LOGIN } from "@/lib/coach-public-paths";
 import { hasDatabase } from "@/lib/db/connection";
 import { registerCoachAction } from "../actions";
 
@@ -18,7 +19,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         </Link>
         <h1>Coach Account beantragen</h1>
         <p>
-          Nach deiner Registrierung wird dein Account von einem Admin geprüft und
+          Nach deiner Registrierung wird dein Account vom EIRENIA-Team geprüft und
           freigeschaltet.
         </p>
         {params.success && (
@@ -60,7 +61,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             Registrierung absenden
           </button>
         </form>
-        <Link href="/admin/login" className="admin-link">
+        <Link href={COACH_LOGIN} className="admin-link">
           Ich habe bereits einen Account
         </Link>
       </div>

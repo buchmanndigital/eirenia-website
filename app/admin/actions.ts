@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSession, destroySession, requireAdmin, requireSession } from "@/lib/auth/session";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import { COACH_LOGIN, COACH_REGISTER } from "@/lib/coach-public-paths";
 import { hasDatabase, sql } from "@/lib/db/connection";
 import { ensureDatabaseReady } from "@/lib/db/schema";
 import { getUserByEmail } from "@/lib/db/users";
@@ -29,12 +30,12 @@ export async function loginAction(formData: FormData) {
 
   const user = await getUserByEmail(email);
   if (!user || user.status !== "active") {
-    redirect("/admin/login?error=invalid");
+    redirect(`${COACH_LOGIN}?error=invalid`);
   }
 
   const valid = await verifyPassword(password, user.password_hash);
   if (!valid) {
-    redirect("/admin/login?error=invalid");
+    redirect(`${COACH_LOGIN}?error=invalid`);
   }
 
   await createSession({
@@ -46,7 +47,7 @@ export async function loginAction(formData: FormData) {
 
 export async function logoutAction() {
   await destroySession();
-  redirect("/admin/login");
+  redirect(COACH_LOGIN);
 }
 
 export async function registerCoachAction(formData: FormData) {
@@ -58,7 +59,7 @@ export async function registerCoachAction(formData: FormData) {
   const password = value(formData, "password");
 
   if (!name || !email || password.length < 8) {
-    redirect("/admin/register?error=invalid");
+    redirect(`${COACH_REGISTER}?error=invalid`);
   }
 
   await ensureDatabaseReady();
@@ -78,7 +79,7 @@ export async function registerCoachAction(formData: FormData) {
     ON CONFLICT (email) DO NOTHING
   `;
 
-  redirect("/admin/register?success=1");
+  redirect(`${COACH_REGISTER}?success=1`);
 }
 
 export async function updateCoachStatusAction(formData: FormData) {

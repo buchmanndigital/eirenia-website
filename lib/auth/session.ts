@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getUserById } from "@/lib/db/users";
 import type { AdminUser, UserRole } from "@/lib/db/types";
+import { COACH_LOGIN } from "@/lib/coach-public-paths";
 
 const sessionCookie = "eirenia_session";
 
@@ -75,7 +76,7 @@ export async function getSessionUser() {
 export async function requireSession() {
   const user = await getSessionUser();
   if (!user) {
-    redirect("/admin/login");
+    redirect(COACH_LOGIN);
   }
   return user;
 }

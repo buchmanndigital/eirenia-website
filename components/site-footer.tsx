@@ -1,4 +1,6 @@
 import { FooterSymbol } from "./icons/footer-symbol";
+import Link from "next/link";
+import { COACH_AREA } from "@/lib/coach-public-paths";
 
 export function SiteFooter() {
   return (
@@ -27,6 +29,7 @@ export function SiteFooter() {
         <a href="#programme">Programme</a>
         <a href="#sternstunde">Sternstunde</a>
         <a href="#kontakt">Kontakt</a>
+        <Link href={COACH_AREA}>Für Coaches</Link>
       </nav>
       <div className="fdiv2" />
       <p className="fcp">

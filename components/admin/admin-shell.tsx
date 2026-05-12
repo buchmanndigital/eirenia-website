@@ -13,7 +13,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
       <aside className="admin-sidebar">
         <Link href="/" className="admin-brand">
           EIRENIA
-          <span>Admin Bereich</span>
+          <span>Team & Kurse</span>
         </Link>
         <nav className="admin-nav">
           <Link href="/admin">Übersicht</Link>

@@ -2322,6 +2322,48 @@ footer {
   margin: 1rem 0 1.5rem;
 }
 
+.coach-area-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.coach-area-btn {
+  display: block;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    filter 0.2s ease;
+}
+
+.coach-area-btn--primary {
+  background: linear-gradient(120deg, #c9a84c, #a88432);
+  color: #fff;
+  border-color: rgba(201, 168, 76, 0.45);
+}
+
+.coach-area-btn--primary:hover {
+  filter: brightness(1.05);
+}
+
+.coach-area-btn--quiet {
+  background: var(--white);
+  color: var(--ocean);
+  border-color: rgba(201, 168, 76, 0.35);
+}
+
+.coach-area-btn--quiet:hover {
+  background: rgba(201, 168, 76, 0.08);
+}
+
 .admin-alert,
 .admin-success {
   border-radius: 12px;
