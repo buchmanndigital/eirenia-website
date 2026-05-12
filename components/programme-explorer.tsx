@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Course } from "@/lib/db/types";
-import { formatCourseDate, formatCourseDay } from "@/lib/date-format";
+import { formatCourseDate, formatDateKeyChip } from "@/lib/date-format";
 import { OsmMap } from "@/components/osm-map";
 
 type ProgrammeExplorerProps = {
@@ -99,24 +99,33 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
           <div className="programme-tool-head programme-tool-head--minimal">
             <span>Kalender</span>
           </div>
-          <div className="calendar-strip calendar-strip--dots" role="group" aria-label="Termin filtern">
+          <div className="calendar-strip calendar-strip--dates" role="group" aria-label="Termin filtern">
             <button
               type="button"
               className={selectedDate === "all" ? "active" : undefined}
               onClick={() => setSelectedDate("all")}
               aria-label="Alle Termine anzeigen"
               title="Alle Termine"
-            />
-            {dateOptions.map(({ key, course }) => (
-              <button
-                type="button"
-                key={key}
-                className={selectedDate === key ? "active" : undefined}
-                onClick={() => setSelectedDate(key)}
-                aria-label={`Termin ${formatCourseDay(course.courseDate)}`}
-                title={formatCourseDate(course.courseDate)}
-              />
-            ))}
+            >
+              <span className="calendar-chip__all-top">Alle</span>
+              <span className="calendar-chip__all-sub">Termine</span>
+            </button>
+            {dateOptions.map(({ key, course }) => {
+              const { weekday, dayMonth } = formatDateKeyChip(key);
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  className={selectedDate === key ? "active" : undefined}
+                  onClick={() => setSelectedDate(key)}
+                  aria-label={`Termin ${formatCourseDate(course.courseDate)}`}
+                  title={formatCourseDate(course.courseDate)}
+                >
+                  <span className="calendar-chip__wd">{weekday}</span>
+                  <span className="calendar-chip__dm">{dayMonth}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 

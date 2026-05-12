@@ -24,6 +24,30 @@ export function formatCourseDay(value: string | null) {
   }).format(new Date(value));
 }
 
+/** Chip-Text für Kalenderfilter; `isoKey` ist YYYY-MM-DD wie bei `toISOString().slice(0, 10)`. */
+export function formatDateKeyChip(isoKey: string) {
+  const parts = isoKey.split("-");
+  if (parts.length !== 3) {
+    return { weekday: "?", dayMonth: isoKey };
+  }
+
+  const y = Number(parts[0]);
+  const mo = Number(parts[1]);
+  const d = Number(parts[2]);
+  if (!y || !mo || !d) {
+    return { weekday: "?", dayMonth: isoKey };
+  }
+
+  const utc = new Date(Date.UTC(y, mo - 1, d));
+  let weekday = new Intl.DateTimeFormat("de-DE", {
+    weekday: "short",
+    timeZone: "UTC",
+  }).format(utc);
+  weekday = weekday.replace(/\.$/, "");
+
+  return { weekday, dayMonth: `${d}.${mo}.` };
+}
+
 export function toDateTimeLocal(value: string | null | undefined) {
   if (!value) {
     return "";

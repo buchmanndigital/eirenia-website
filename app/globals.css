@@ -910,56 +910,83 @@ body {
   gap: 0.7rem;
 }
 
-.calendar-strip--dots {
+.calendar-strip--dates {
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.45rem;
+}
+
+.calendar-strip--dates button {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-}
-
-.calendar-strip--dots button {
-  width: 34px;
-  height: 34px;
-  min-height: 0;
-  padding: 0;
-  border-radius: 50%;
+  justify-content: center;
+  gap: 0.08rem;
+  min-width: 3.2rem;
+  padding: 0.4rem 0.45rem 0.42rem;
+  border-radius: 10px;
   flex-shrink: 0;
-  position: relative;
+  font-size: 0.68rem;
+  line-height: 1.15;
   border: 1px solid rgba(201, 168, 76, 0.35);
-  background: rgba(250, 248, 242, 0.9);
-}
-
-.calendar-strip--dots button::after {
-  content: "";
-  position: absolute;
-  inset: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: 50%;
-  background: rgba(42, 62, 79, 0.18);
+  background: rgba(250, 248, 242, 0.95);
+  cursor: pointer;
   transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.calendar-strip--dots button:hover::after {
-  background: rgba(201, 168, 76, 0.55);
-  transform: scale(1.15);
+.calendar-strip--dates button:hover {
+  border-color: rgba(201, 168, 76, 0.55);
+  background: rgba(255, 252, 245, 1);
 }
 
-.calendar-strip--dots button.active {
+.calendar-strip--dates button.active {
   border-color: var(--gold);
   background: rgba(201, 168, 76, 0.14);
-  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.12);
 }
 
-.calendar-strip--dots button.active::after {
-  background: var(--gold);
-  transform: scale(1.25);
+.calendar-strip--dates .calendar-chip__wd {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  font-size: 0.6rem;
+  color: var(--tm2);
+  opacity: 0.92;
 }
 
-.calendar-strip button,
+.calendar-strip--dates .calendar-chip__dm {
+  font-family: var(--font-playfair), serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ocean);
+}
+
+.calendar-strip--dates .calendar-chip__all-top {
+  font-weight: 700;
+  font-size: 0.74rem;
+  color: var(--ocean);
+}
+
+.calendar-strip--dates .calendar-chip__all-sub {
+  font-size: 0.56rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tm2);
+  opacity: 0.78;
+}
+
+.calendar-strip--dates button.active .calendar-chip__wd,
+.calendar-strip--dates button.active .calendar-chip__all-sub {
+  color: var(--tm);
+  opacity: 0.95;
+}
+
+.calendar-strip:not(.calendar-strip--dates) button,
 .location-chips button,
 .location-search button {
   border: 1px solid rgba(201, 168, 76, 0.24);
