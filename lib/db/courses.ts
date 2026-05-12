@@ -54,15 +54,25 @@ export async function getPublishedCourses(): Promise<Course[]> {
         c.*,
         u.name AS coach_name
       FROM courses c
-      LEFT JOIN admin_users u ON u.id = c.coach_id
+      INNER JOIN admin_users u ON u.id = c.coach_id
       WHERE c.status = 'published'
+        AND u.status != 'blocked'
       ORDER BY c.course_date ASC NULLS LAST, c.created_at ASC
     `;
     const rows = result.rows.map(mapCourseRow);
-    if (rows.length === 0 && !strict) {
-      return programmeCatalogFromFile();
+    if (rows.length > 0) {
+      return rows;
     }
-    return rows;
+    if (strict) {
+      return [];
+    }
+    const publishedExists = await sql<{ x: number }>`
+      SELECT 1 AS x FROM courses WHERE status = 'published' LIMIT 1
+    `;
+    if (publishedExists.rows[0]) {
+      return [];
+    }
+    return programmeCatalogFromFile();
   } catch (err) {
     if (!strict) {
       console.error("[getPublishedCourses] DB-Fehler, statischer Katalog:", err);
@@ -87,13 +97,30 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
         c.*,
         u.name AS coach_name
       FROM courses c
-      LEFT JOIN admin_users u ON u.id = c.coach_id
-      WHERE c.slug = ${slug} AND c.status = 'published'
+      INNER JOIN admin_users u ON u.id = c.coach_id
+      WHERE c.slug = ${slug}
+        AND c.status = 'published'
+        AND u.status != 'blocked'
       LIMIT 1
     `;
     const row = result.rows[0];
     if (row) {
       return mapCourseRow(row);
+    }
+
+    if (!strict) {
+      const blockedInDb = await sql<{ slug: string }>`
+        SELECT c.slug
+        FROM courses c
+        INNER JOIN admin_users u ON u.id = c.coach_id
+        WHERE c.slug = ${slug}
+          AND c.status = 'published'
+          AND u.status = 'blocked'
+        LIMIT 1
+      `;
+      if (blockedInDb.rows[0]) {
+        return null;
+      }
     }
   } catch (err) {
     if (strict) {

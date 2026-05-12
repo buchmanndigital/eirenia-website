@@ -100,12 +100,19 @@ export async function updateCoachStatusAction(formData: FormData) {
     WHERE id = ${coachId} AND role = 'coach'
   `;
 
-  revalidatePath("/admin/coaches");
-
   const affected = result.rowCount ?? 0;
   if (affected === 0) {
     redirect("/admin/coaches?error=no-rows");
   }
+
+  revalidatePath("/admin/coaches");
+  const courseRows = await sql<{ slug: string }>`
+    SELECT slug FROM courses WHERE coach_id = ${coachId}
+  `;
+  for (const row of courseRows.rows) {
+    revalidatePath(`/programme/${row.slug}`);
+  }
+  revalidatePath("/");
 
   redirect("/admin/coaches?saved=1");
 }
