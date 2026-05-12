@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Course } from "@/lib/db/types";
 import { formatCourseDate, formatDateKeyChip } from "@/lib/date-format";
 import { OsmMap } from "@/components/osm-map";
@@ -12,9 +12,10 @@ type ProgrammeExplorerProps = {
 export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
   const [selectedDate, setSelectedDate] = useState("all");
   const [locationQuery, setLocationQuery] = useState("");
-  /** Nur gesetztes, „bestätigtes“ Suchziel lädt die Karte (Enter, Suchen-Klick, Chip). */
-  const [committedLocation, setCommittedLocation] = useState("");
-  const mapActive = committedLocation.trim().length >= 2;
+  const mapSectionRef = useRef<HTMLDivElement>(null);
+
+  const mapNeedle = locationQuery.trim();
+  const mapActive = mapNeedle.length >= 2;
 
   const dateOptions = useMemo(() => {
     const seen = new Set<string>();
@@ -67,9 +68,8 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
 
   const mapPlaces = useMemo(() => {
     const next = new Set<string>();
-    const committed = committedLocation.trim();
-    if (committed.length >= 2) {
-      next.add(committed);
+    if (mapNeedle.length >= 2) {
+      next.add(mapNeedle);
     }
     for (const course of visibleCourses) {
       const line = (course.address || course.location || "").trim();
@@ -78,18 +78,14 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
       }
     }
     return Array.from(next);
-  }, [committedLocation, visibleCourses]);
+  }, [mapNeedle, visibleCourses]);
 
-  function commitSearch() {
-    const q = locationQuery.trim();
-    if (q.length >= 2) {
-      setCommittedLocation(q);
-    }
+  function scrollMapIntoView() {
+    mapSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function resetLocation() {
     setLocationQuery("");
-    setCommittedLocation("");
   }
 
   return (
@@ -134,7 +130,7 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
             <span>Ortssuche</span>
           </div>
           <div
-            className={`location-search location-search--compact${locationQuery.trim().length === 0 && committedLocation.length === 0 ? " location-search--no-reset" : ""}`.trim()}
+            className={`location-search location-search--compact${locationQuery.trim().length === 0 ? " location-search--no-reset" : ""}`.trim()}
           >
             <input
               value={locationQuery}
@@ -142,7 +138,9 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   event.preventDefault();
-                  commitSearch();
+                  if (locationQuery.trim().length >= 2) {
+                    scrollMapIntoView();
+                  }
                 }
               }}
               placeholder="Ort …"
@@ -153,13 +151,17 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
             <button
               type="button"
               className="location-search-commit"
-              onClick={() => commitSearch()}
+              onClick={() => {
+                if (locationQuery.trim().length >= 2) {
+                  scrollMapIntoView();
+                }
+              }}
               disabled={locationQuery.trim().length < 2}
-              aria-label="Suche ausführen und Karte anzeigen"
+              aria-label="Zur Karte springen"
             >
               ◎
             </button>
-            {(locationQuery.trim().length > 0 || committedLocation.length > 0) && (
+            {(locationQuery.trim().length > 0) && (
               <button
                 type="button"
                 className="location-search-reset"
@@ -176,10 +178,10 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
                 <button
                   type="button"
                   key={address}
-                  className={committedLocation === address ? "active" : undefined}
+                  className={locationQuery.trim() === address ? "active" : undefined}
                   onClick={() => {
                     setLocationQuery(address);
-                    setCommittedLocation(address);
+                    requestAnimationFrame(() => scrollMapIntoView());
                   }}
                   aria-label={address}
                   title={address}
@@ -188,7 +190,7 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
             </div>
           )}
           {mapActive && mapPlaces.length > 0 && (
-            <div className="map-frame map-frame--revealed">
+            <div ref={mapSectionRef} className="map-frame map-frame--revealed">
               <OsmMap
                 places={mapPlaces}
                 title="Friedensradar Karte"
