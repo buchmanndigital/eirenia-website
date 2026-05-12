@@ -83,18 +83,31 @@ export async function registerCoachAction(formData: FormData) {
 }
 
 export async function updateCoachStatusAction(formData: FormData) {
+  requireDatabase();
   await requireAdmin();
+  await ensureDatabaseReady();
+
   const coachId = value(formData, "coachId");
   const status = value(formData, "status");
 
-  if (!["pending", "active", "blocked"].includes(status)) {
-    return;
+  if (!coachId || !["pending", "active", "blocked"].includes(status)) {
+    redirect("/admin/coaches?error=invalid");
   }
 
-  await sql`
-    UPDATE admin_users SET status = ${status} WHERE id = ${coachId}
+  const result = await sql`
+    UPDATE admin_users
+    SET status = ${status}
+    WHERE id = ${coachId} AND role = 'coach'
   `;
+
   revalidatePath("/admin/coaches");
+
+  const affected = result.rowCount ?? 0;
+  if (affected === 0) {
+    redirect("/admin/coaches?error=no-rows");
+  }
+
+  redirect("/admin/coaches?saved=1");
 }
 
 export async function upsertCourseAction(formData: FormData) {

@@ -47,6 +47,19 @@ export async function getAllCoaches() {
   return result.rows.map((row) => mapUser(rowWithoutPassword(row)));
 }
 
+export async function getCoachAccounts() {
+  if (!hasDatabase) {
+    return [];
+  }
+  await ensureDatabaseReady();
+  const result = await sql<UserRow>`
+    SELECT * FROM admin_users
+    WHERE role = 'coach'
+    ORDER BY created_at DESC
+  `;
+  return result.rows.map((row) => mapUser(rowWithoutPassword(row)));
+}
+
 export function rowWithoutPassword(row: UserRow) {
   const { password_hash: _passwordHash, ...safeRow } = row;
   void _passwordHash;
