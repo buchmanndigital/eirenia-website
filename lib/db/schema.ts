@@ -124,11 +124,13 @@ async function seedProgrammeCatalog() {
       ? crypto.randomUUID()
       : "Eirenia-Andreas-Dev-2026!");
 
-  const existingAndreasByProdEmail = await sql<{ id: string }>`
-    SELECT id FROM admin_users WHERE email = ${andreasProdEmail} LIMIT 1
+  const existingAndreas = await sql<{ id: string }>`
+    SELECT id FROM admin_users
+    WHERE id = ${SEED_COACH_META["Andreas Zettel"]!.id} OR email = ${andreasProdEmail}
+    LIMIT 1
   `;
 
-  if (existingAndreasByProdEmail.rowCount === 0) {
+  if (existingAndreas.rowCount === 0) {
     const meta = SEED_COACH_META["Andreas Zettel"]!;
     await sql`
       INSERT INTO admin_users (
@@ -143,6 +145,7 @@ async function seedProgrammeCatalog() {
         NULL,
         'Friedensträger. Begleiter. Mensch.'
       )
+      ON CONFLICT (id) DO NOTHING
     `;
   }
 
@@ -152,7 +155,9 @@ async function seedProgrammeCatalog() {
     }
 
     const existing = await sql<{ id: string }>`
-      SELECT id FROM admin_users WHERE email = ${meta.email} LIMIT 1
+      SELECT id FROM admin_users
+      WHERE id = ${meta.id} OR email = ${meta.email}
+      LIMIT 1
     `;
 
     if (existing.rowCount === 0) {
@@ -169,6 +174,7 @@ async function seedProgrammeCatalog() {
           NULL,
           NULL
         )
+        ON CONFLICT (id) DO NOTHING
       `;
     }
   }
