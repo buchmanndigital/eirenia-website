@@ -154,20 +154,67 @@ body {
 
 .hcl {
   margin-bottom: 2rem;
-  opacity: 0;
-  animation: fu 1.4s ease forwards;
+}
+
+.hero-logo-svg {
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.hero-logo-ring {
+  animation: heroRingDraw 1.2s cubic-bezier(0.45, 0, 0.2, 1) forwards;
+}
+
+@keyframes heroRingDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero-logo-dot-wrap {
+  transform-origin: 65px 79px;
+  animation: heroDotPop 0.65s cubic-bezier(0.34, 1.4, 0.64, 1) 0.85s both;
+}
+
+@keyframes heroDotPop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .hbn {
   font-family: var(--font-playfair), serif;
   font-size: clamp(3.5rem, 9vw, 7.5rem);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.06em;
   color: var(--gold);
   font-weight: 400;
   line-height: 1;
   margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.1em;
+}
+
+.hero-letter {
+  display: inline-block;
   opacity: 0;
-  animation: fu 1.4s ease 0.2s forwards;
+  transform: translateY(0.22em);
+  animation: heroLetterIn 0.75s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes heroLetterIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hbt {
@@ -177,7 +224,7 @@ body {
   color: var(--ocean);
   margin-bottom: 2.5rem;
   opacity: 0;
-  animation: fu 1.4s ease 0.35s forwards;
+  animation: heroFadeUp 1s cubic-bezier(0.33, 1, 0.68, 1) 0.72s forwards;
 }
 
 .hq {
@@ -189,7 +236,7 @@ body {
   margin-bottom: 3rem;
   max-width: 640px;
   opacity: 0;
-  animation: fu 1.4s ease 0.5s forwards;
+  animation: heroFadeUp 1s cubic-bezier(0.33, 1, 0.68, 1) 0.88s forwards;
 }
 
 .hq .g {
@@ -205,7 +252,28 @@ body {
   max-width: 700px;
   font-weight: 400;
   opacity: 0;
-  animation: fu 1.4s ease 0.65s forwards;
+  animation: heroFadeUp 1s cubic-bezier(0.33, 1, 0.68, 1) 1.02s forwards;
+}
+
+.hh-line {
+  display: inline;
+}
+
+.hero-dove {
+  display: inline-block;
+  margin-right: 0.15em;
+  animation: heroDoveFloat 4.5s ease-in-out 1.3s infinite;
+  transform-origin: center;
+}
+
+@keyframes heroDoveFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .hs {
@@ -214,7 +282,7 @@ body {
   max-width: 520px;
   margin-bottom: 3rem;
   opacity: 0;
-  animation: fu 1.4s ease 0.8s forwards;
+  animation: heroFadeUp 1s cubic-bezier(0.33, 1, 0.68, 1) 1.14s forwards;
 }
 
 .hbtns {
@@ -222,8 +290,35 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.hero-cta-primary,
+.hero-cta-secondary {
   opacity: 0;
-  animation: fu 1.4s ease 0.95s forwards;
+  transform: translateY(10px) scale(0.98);
+  animation: heroCtaIn 0.75s cubic-bezier(0.33, 1, 0.68, 1) 1.26s forwards;
+}
+
+.hero-cta-secondary {
+  animation-delay: 1.36s;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroCtaIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .scroll-ind {
@@ -236,7 +331,7 @@ body {
   align-items: center;
   gap: 6px;
   opacity: 0;
-  animation: fi 2s ease 2s forwards;
+  animation: fi 2s ease 2.2s forwards;
 }
 
 .scroll-ind span {
@@ -251,6 +346,49 @@ body {
   height: 36px;
   background: var(--gold-l);
   animation: sp 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo-ring {
+    animation: none;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .hero-logo-dot-wrap {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-letter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hbt,
+  .hq,
+  .hh,
+  .hs {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-cta-primary,
+  .hero-cta-secondary {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-dove {
+    animation: none;
+  }
+
+  .scroll-ind {
+    animation: fi 0.01s ease forwards;
+  }
 }
 
 /* BUTTONS */
