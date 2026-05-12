@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getPublicCourseRegistrationTarget } from "@/lib/db/courses";
-import { sendRegistrationEmails } from "@/lib/email/registration-mail";
+import { sendRegistrationEmails, smtpEnvSummary } from "@/lib/email/registration-mail";
 import { hasDatabase, sql } from "@/lib/db/connection";
 import { ensureDatabaseReady } from "@/lib/db/schema";
 
@@ -69,7 +69,11 @@ export async function registerForCourseAction(formData: FormData) {
       coachName: target.coachName,
     });
   } catch (err) {
-    console.error("[registerForCourseAction] E-Mail fehlgeschlagen:", err);
+    console.error(
+      "[registerForCourseAction] E-Mail fehlgeschlagen (Anmeldung ist gespeichert). SMTP-Check:",
+      JSON.stringify(smtpEnvSummary()),
+      err,
+    );
   }
 
   revalidatePath(`/programme/${slug}`);

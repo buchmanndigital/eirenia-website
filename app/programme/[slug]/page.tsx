@@ -6,6 +6,8 @@ import { formatCourseDate } from "@/lib/date-format";
 import { registerForCourseAction } from "./actions";
 
 export const dynamic = "force-dynamic";
+/** SMTP zu Strato kann länger dauern; Vercel-Default von 10s reicht oft nicht. */
+export const maxDuration = 60;
 
 type ProgrammeDetailPageProps = {
   params: Promise<{ slug: string }>;
