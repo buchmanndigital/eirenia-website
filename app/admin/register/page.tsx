@@ -1,70 +1,19 @@
-import Link from "next/link";
-import { COACH_LOGIN } from "@/lib/coach-public-paths";
-import { hasDatabase } from "@/lib/db/connection";
-import { registerCoachAction } from "../actions";
+import { Suspense } from "react";
+import { hasDatabase } from "@/lib/db/env";
+import { RegisterClient } from "./register-client";
 
-type RegisterPageProps = {
-  searchParams: Promise<{ success?: string; error?: string }>;
-};
-
-export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const params = await searchParams;
-
+export default function RegisterPage() {
   return (
-    <main className="admin-auth">
-      <div className="admin-auth-card wide">
-        <Link href="/" className="admin-brand centered">
-          EIRENIA
-          <span>Coach Registrierung</span>
-        </Link>
-        <h1>Coach Account beantragen</h1>
-        <p>
-          Nach deiner Registrierung wird dein Account vom EIRENIA-Team geprüft und
-          freigeschaltet.
-        </p>
-        {params.success && (
-          <div className="admin-success">
-            Danke für deine Registrierung. Dein Account wartet jetzt auf Freigabe.
+    <Suspense
+      fallback={
+        <main className="admin-auth">
+          <div className="admin-auth-card wide">
+            <p style={{ color: "var(--tm2)", textAlign: "center" }}>Laden …</p>
           </div>
-        )}
-        {params.error && <div className="admin-alert">Bitte fülle alle Pflichtfelder korrekt aus.</div>}
-        {!hasDatabase && (
-          <div className="admin-alert">
-            Coach-Registrierungen benötigen eine verbundene Vercel
-            Postgres/Neon-Datenbank.
-          </div>
-        )}
-        <form action={registerCoachAction} className="admin-form">
-          <label>
-            Name
-            <input name="name" required />
-          </label>
-          <div className="admin-grid-2">
-            <label>
-              E-Mail
-              <input name="email" type="email" required />
-            </label>
-            <label>
-              Telefon
-              <input name="phone" type="tel" />
-            </label>
-          </div>
-          <label>
-            Passwort
-            <input name="password" type="password" minLength={8} required />
-          </label>
-          <label>
-            Kurzbeschreibung
-            <textarea name="bio" rows={4} placeholder="Wofür stehst du als Begleiter:in?" />
-          </label>
-          <button className="admin-primary" type="submit">
-            Registrierung absenden
-          </button>
-        </form>
-        <Link href={COACH_LOGIN} className="admin-link">
-          Ich habe bereits einen Account
-        </Link>
-      </div>
-    </main>
+        </main>
+      }
+    >
+      <RegisterClient hasDatabase={hasDatabase} />
+    </Suspense>
   );
 }
