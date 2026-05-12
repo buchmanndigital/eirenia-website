@@ -784,6 +784,15 @@ body {
   margin: 0 auto 3.5rem;
 }
 
+.programme-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--tm2);
+  padding: 2.5rem 1rem;
+  font-size: 0.98rem;
+  line-height: 1.8;
+}
+
 .pc {
   background: var(--white);
   border: 0.5px solid rgba(201, 168, 76, 0.15);

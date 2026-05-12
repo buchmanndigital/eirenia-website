@@ -1,7 +1,9 @@
-import { programmes } from "@/lib/programmes";
+import { getPublishedCourses } from "@/lib/db/courses";
 import { Reveal } from "../reveal";
 
-export function ProgrammeSection() {
+export async function ProgrammeSection() {
+  const courses = await getPublishedCourses();
+
   return (
     <section id="programme">
       <div className="container">
@@ -39,19 +41,28 @@ export function ProgrammeSection() {
         </Reveal>
         <Reveal>
           <div className="pgrid">
-            {programmes.map((p) => (
-              <div key={p.name} className="pc">
-                <div className="pci">{p.emoji}</div>
-                <span className="pn">{p.name}</span>
-                <span className="pt" style={p.tagColor ? { color: p.tagColor } : undefined}>
-                  {p.tag}
+            {courses.map((course) => (
+              <div key={course.slug} className="pc">
+                <div className="pci">{course.emoji}</div>
+                <span className="pn">{course.title}</span>
+                <span
+                  className="pt"
+                  style={course.categoryColor ? { color: course.categoryColor } : undefined}
+                >
+                  {course.category}
                 </span>
-                <span className="pe">{p.description}</span>
-                <a href={`/programme/${p.slug}`} className="pl">
+                <span className="pe">{course.subtitle}</span>
+                <a href={`/programme/${course.slug}`} className="pl">
                   Details ansehen →
                 </a>
               </div>
             ))}
+            {courses.length === 0 && (
+              <p className="programme-empty">
+                Aktuell sind keine Kurse veröffentlicht. Schau bald wieder vorbei
+                oder melde dich bei uns.
+              </p>
+            )}
           </div>
         </Reveal>
         <div style={{ textAlign: "center" }}>

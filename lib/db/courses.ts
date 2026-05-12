@@ -44,7 +44,7 @@ export async function getPublishedCourses(): Promise<Course[]> {
     `;
     return result.rows.map(mapCourseRow);
   } catch {
-    return programmes.map(programmeToCourse);
+    return [];
   }
 }
 
@@ -67,8 +67,7 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
     `;
     return result.rows[0] ? mapCourseRow(result.rows[0]) : null;
   } catch {
-    const programme = getProgrammeBySlug(slug);
-    return programme ? programmeToCourse(programme) : null;
+    return null;
   }
 }
 

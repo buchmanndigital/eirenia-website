@@ -143,6 +143,7 @@ export async function upsertCourseAction(formData: FormData) {
     `;
     revalidatePath("/admin/courses");
     revalidatePath(`/programme/${slug}`);
+    revalidatePath("/");
     redirect(`/admin/courses/${courseId}?saved=1`);
   }
 
@@ -196,6 +197,13 @@ export async function approveCourseAction(formData: FormData) {
   await sql`
     UPDATE courses SET status = ${status}, updated_at = NOW() WHERE id = ${courseId}
   `;
+  const slugResult = await sql<{ slug: string }>`
+    SELECT slug FROM courses WHERE id = ${courseId} LIMIT 1
+  `;
+  const slug = slugResult.rows[0]?.slug;
   revalidatePath("/admin/courses");
   revalidatePath("/");
+  if (slug) {
+    revalidatePath(`/programme/${slug}`);
+  }
 }
