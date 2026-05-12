@@ -47,7 +47,7 @@ export function ProgrammeSection() {
                   {p.tag}
                 </span>
                 <span className="pe">{p.description}</span>
-                <a href="#kontakt" className="pl">
+                <a href={`/programme/${p.slug}`} className="pl">
                   Details ansehen →
                 </a>
               </div>
