@@ -6,6 +6,14 @@ import type { Course, CourseRegistration, CourseStatus } from "./types";
 const donationText =
   "Diese Begegnung findet auf Spendenbasis statt. Du gibst, was sich für dich stimmig anfühlt – aus deinem Herzen heraus, ohne Verpflichtung, ohne Erwartung. Jeder ist willkommen, ganz gleich, was er mitbringt. Was zählt, ist deine Anwesenheit und dein offenes Herz.";
 
+/** Wenn wahr: keine Daten aus `lib/programmes.ts` – leere DB / Fehler bleiben sichtbar. Env: `PROGRAMMES_DB_ONLY=1` oder (Legacy) `PROGRAMMES_DB_STRICT=1`. */
+function strictDatabaseCatalog(): boolean {
+  return (
+    process.env.PROGRAMMES_DB_ONLY === "1" ||
+    process.env.PROGRAMMES_DB_STRICT === "1"
+  );
+}
+
 type CourseRow = {
   id: string;
   coach_id: string;
@@ -37,8 +45,7 @@ export async function getPublishedCourses(): Promise<Course[]> {
     return programmeCatalogFromFile();
   }
 
-  const allowDevFallback =
-    process.env.NODE_ENV !== "production" && process.env.PROGRAMMES_DB_STRICT !== "1";
+  const strict = strictDatabaseCatalog();
 
   try {
     await ensureDatabaseReady();
@@ -52,13 +59,13 @@ export async function getPublishedCourses(): Promise<Course[]> {
       ORDER BY c.course_date ASC NULLS LAST, c.created_at ASC
     `;
     const rows = result.rows.map(mapCourseRow);
-    if (rows.length === 0 && allowDevFallback) {
+    if (rows.length === 0 && !strict) {
       return programmeCatalogFromFile();
     }
     return rows;
   } catch (err) {
-    if (allowDevFallback) {
-      console.warn("[getPublishedCourses] DB nicht erreichbar – statischer Katalog:", err);
+    if (!strict) {
+      console.error("[getPublishedCourses] DB-Fehler, statischer Katalog:", err);
       return programmeCatalogFromFile();
     }
     return [];
@@ -71,6 +78,8 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
     return programme ? programmeToCourse(programme) : null;
   }
 
+  const strict = strictDatabaseCatalog();
+
   try {
     await ensureDatabaseReady();
     const result = await sql<CourseRow>`
@@ -82,10 +91,23 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
       WHERE c.slug = ${slug} AND c.status = 'published'
       LIMIT 1
     `;
-    return result.rows[0] ? mapCourseRow(result.rows[0]) : null;
-  } catch {
+    const row = result.rows[0];
+    if (row) {
+      return mapCourseRow(row);
+    }
+  } catch (err) {
+    if (strict) {
+      return null;
+    }
+    console.error("[getPublicCourse] DB-Fehler:", err);
+  }
+
+  if (strict) {
     return null;
   }
+
+  const programme = getProgrammeBySlug(slug);
+  return programme ? programmeToCourse(programme) : null;
 }
 
 export async function getCoursesForUser(userId: string, isAdmin: boolean) {
