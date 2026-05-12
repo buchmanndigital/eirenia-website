@@ -53,174 +53,143 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="legal-block" aria-labelledby="ds-ueberblick">
-            <h2 id="ds-ueberblick">2. Übersicht der eingesetzten Dienste</h2>
-            <p>Für den Betrieb dieser Website und verbundener Funktionen nutzen wir u. a.:</p>
+            <h2 id="ds-ueberblick">2. Übersicht eingebundener Dienstleistungen</h2>
+            <p>Zur Bereitstellung der Website nutzen wir unter anderem:</p>
             <ul className="legal-list">
               <li>
-                <strong>Vercel Inc.</strong> – Hosting, Auslieferung der Website, serverseitige
-                Funktionen (Serverless/Edge) und technische Protokolle.
+                <strong>Hosting</strong> – Auslieferung der Seite, serverseitige Funktionen und
+                technische Protokolle; der Anbieter kann sich außerhalb der EU befinden,
+                soweit gesetzlich zulässig abgesichert.
               </li>
               <li>
-                <strong>Neon (über Vercel Postgres)</strong> – verwaltete PostgreSQL-Datenbank zur
-                Speicherung von Inhalten und personenbezogenen Daten aus dem
-                geschützten Coach-/Admin-Bereich sowie aus Kursanmeldungen.
+                <strong>Speicherung</strong> – sichere, serverseitige Ablage von Daten, die Sie uns
+                über diese Website übermitteln; Umfang siehe die Abschnitte zu
+                Anmeldungen und Mitwirkenden.
               </li>
               <li>
-                <strong>STRATO AG</strong> – Versand von E-Mails (SMTP) im Zusammenhang mit
-                Kursanmeldungen.
+                <strong>E-Mail-Versand</strong> – Zustellung von Bestätigungen und Benachrichtigungen
+                bei Anmeldungen über den für unser geschäftliches Postfach genutzten
+                Anbieter (EU/EWR).
               </li>
               <li>
-                <strong>OpenStreetMap (OSM)</strong> – Kartenkacheln zur Darstellung von
-                Veranstaltungsorten.
+                <strong>Karten und Standorte</strong> – Darstellung von Veranstaltungsorten mit
+                Kartendarstellungen und – rein technisch, auf unserem Server –
+                Ortszuordnung; Anbindung an öffentlich dokumentierte Kartendienste.
               </li>
               <li>
-                <strong>Nominatim (OpenStreetMap)</strong> – serverseitige Umwandlung von
-                Ortsbezeichnungen in Koordinaten für die Kartendarstellung.
+                <strong>Schriftarten</strong> – Auslieferung über diese Domain (siehe unten).
               </li>
               <li>
-                <strong>Next.js / Schriftarten</strong> – über <code>next/font</code> eingebundene
-                Schriftdateien (siehe Abschnitt Schriftarten).
+                <strong>Reichweitenmessung</strong> – Auswertung der Nutzung dieser Website zur
+                Verbesserung des Angebots; eingebunden über den Hosting-Anbieter nach dessen
+                technischer Dokumentation (ohne herkömmliche Werbe-Cookies).
               </li>
             </ul>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-hosting">
-            <h2 id="ds-hosting">3. Hosting und Infrastruktur (Vercel)</h2>
+            <h2 id="ds-hosting">3. Hosting</h2>
             <p>
-              Unsere Website wird bei{" "}
-              <strong>Vercel Inc.</strong>, 440 N Barranca Ave #4133, Covina, CA 91723, USA
-              gehostet. Für Nutzer in der EU kann die Bereitstellung auch über
-              Rechenzentren in Europa erfolgen (z. B. Region Frankfurt). Beim Aufruf der
-              Seite werden durch Vercel technisch erforderliche Daten verarbeitet
-              (z. B. IP-Adresse, Zeitpunkt der Anfrage, angeforderte URL, User-Agent,
-              ggf. Referrer), um die Seite auszuliefern und zu stabilisieren.
+              Die Website wird durch einen professionellen Hosting-Anbieter betrieben und
+              ausgeliefert. Dabei werden technisch erforderliche Informationen verarbeitet
+              (u. a. IP-Adresse, Zeitpunkt der Anfrage, aufgerufene Inhalte,
+              Browserhinweise), damit die Seite sicher und stabil erreichbar ist. Nutzer in
+              Europa können über EU-nahe Rechenzentren bedient werden; je nach Anfrage ist
+              auch eine Verarbeitung außerhalb der EU möglich, wobei wir geeignete
+              Schutzmaßnahmen (z. B. Standardvertragsklauseln oder vergleichbare
+              Garantien) einsetzen.
             </p>
             <p>
-              Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an
-              einem sicheren und zuverlässigen Webangebot). Mit Vercel besteht ein
-              Vertrag zur Auftragsverarbeitung, soweit erforderlich. Soweit Daten in
-              die USA übermittelt werden, stützen wir uns auf geeignete Garantien im
-              Sinne von Art. 46 DSGVO (u. a. EU-Standardvertragsklauseln) bzw. auf die
-              Voraussetzungen eines Angemessenheitsbeschlusses / Data Privacy
-              Framework, sofern anwendbar. Weitere Informationen:{" "}
-              <a
-                href="https://vercel.com/legal/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="legal-link"
-              >
-                vercel.com/legal/privacy-policy
-              </a>
+              Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an
+              Betrieb und Sicherheit des Webangebots). Näheres zu Zwecken und Rechten
+              finden Sie typischerweise in der Datenschutzerklärung des jeweiligen
+              Hosting-Anbieters, den wir für dieses Projekt einsetzen.
+            </p>
+            <p>
+              <strong>Nutzungsauswertung (Web Analytics):</strong> Wir nutzen im Rahmen des Hostings
+              eine Messung, die uns zeigt, wie die Website genutzt wird (z. B.
+              Seitenaufrufe, ungefähre Herkunft der Zugriffe), um Inhalte und Technik zu
+              verbessern. Die Auswertung erfolgt über die dafür vorgesehene Funktion des
+              Hosting-Anbieters; Details zu Datenarten, Speicherfristen und etwaigen
+              Cookie- oder Local-Storage-Nutzung entnehmen Sie bitte den aktuellen
+              Datenschutzhinweisen des Anbieters. Rechtsgrundlage: Art. 6 Abs. 1 lit. f
+              DSGVO (berechtigtes Interesse an einer bedarfsgerechten Weiterentwicklung des
+              Auftritts).
             </p>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-datenbank">
-            <h2 id="ds-datenbank">4. Datenbank (Neon / Vercel Postgres)</h2>
+            <h2 id="ds-datenbank">4. Speicherung personenbezogener Daten</h2>
             <p>
-              Personenbezogene Daten aus dem geschützten Bereich für Coaches und
-              Administratoren sowie aus öffentlichen Kursanmeldungen werden in einer
-              von <strong>Neon</strong> betriebenen PostgreSQL-Datenbank gespeichert (Anbindung über
-              Vercel Postgres). Umfang und Zweck ergeben sich aus den jeweiligen
-              Verarbeitungen (Abschnitte Coach-Bereich und Kursanmeldung). Es besteht
-              ein Auftragsverarbeitungsverhältnis mit dem Anbieter, soweit gesetzlich
-              erforderlich. Hinweise zum Datenschutz:{" "}
-              <a
-                href="https://neon.tech/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="legal-link"
-              >
-                neon.tech/privacy-policy
-              </a>
+              Angaben aus Anmeldungen und aus dem geschlossenen Bereich für registrierte
+              Mitwirkende werden elektronisch gespeichert. Die Speicher-Infrastruktur ist
+              in das Hosting-Angebot eingebunden; etwaige weitere technische
+              Unterauftragnehmer sind über die Angaben des Hosting-Anbieters
+              (Auftragsverarbeitung, Unterauftragnehmer-/Subprocessor-Hinweise)
+              nachvollziehbar. Bei uns erfolgt die Verarbeitung ausschließlich zu den in
+              dieser Erklärung genannten Zwecken.
             </p>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-mail">
-            <h2 id="ds-mail">5. E-Mail-Versand (STRATO)</h2>
+            <h2 id="ds-mail">5. E-Mails bei Anmeldungen</h2>
             <p>
-              Wenn Sie sich für einen Kurs anmelden, versenden wir transaktionsbezogene
-              E-Mails über die SMTP-Dienste der{" "}
-              <strong>STRATO AG</strong>, Pascalstraße 10, 10587 Berlin, Deutschland. Dabei werden
-              die für den Versand nötigen Daten (insbesondere Absender, Empfänger,
-              Betreff und Inhalt der Nachricht) verarbeitet. Rechtsgrundlage ist Art. 6
-              Abs. 1 lit. b DSGVO (Durchführung vorvertraglicher Maßnahmen bzw.
-              Vertragserfüllung). Datenschutzhinweise STRATO:{" "}
-              <a
-                href="https://www.strato.de/datenschutz/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="legal-link"
-              >
-                strato.de/datenschutz
-              </a>
+              Wenn Sie sich für eine Veranstaltung anmelden, können automatisiert
+              Bestätigungen und Benachrichtigungen per E-Mail versendet werden. Dabei
+              werden die für den Versand erforderlichen Metadaten und Inhalte (Absender,
+              Empfänger, Betreff, Nachrichtentext) verarbeitet. Hierfür nutzen wir den
+              E-Mail-Dienst unseres für das betreffende Postfach eingesetzten Anbieters
+              (Sitz in Deutschland). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO
+              (vorvertragliche Maßnahmen / Vertragserfüllung). Einzelheiten zum Datenschutz
+              regelt der jeweilige Anbieter in seiner Datenschutzerklärung.
             </p>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-osm">
-            <h2 id="ds-osm">6. Karten: OpenStreetMap und Nominatim</h2>
-            <h3 className="legal-h3">6.1 Kartendarstellung (Kacheln)</h3>
+            <h2 id="ds-osm">6. Karten und Ortsdarstellung</h2>
             <p>
-              Zum Anzeigen von Karten werden Kartendarstellungen (Kacheln) von den
-              Servern der <strong>OpenStreetMap Foundation</strong> (OSMF) geladen. Dabei kann Ihre
-              IP-Adresse und technische Metadaten (z. B. Browserkennung) an die
-              jeweiligen Server übermittelt werden. Rechtsgrundlage ist Art. 6 Abs. 1
-              lit. f DSGVO (berechtigtes Interesse an einer nutzerfreundlichen Darstellung
-              von Veranstaltungsorten). OSM-Nutzungsrichtlinien und Impressum der OSMF:{" "}
-              <a
-                href="https://operations.osmfoundation.org/policies/tiles/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="legal-link"
-              >
-                operations.osmfoundation.org/policies/tiles/
-              </a>
+              Zur Anzeige von Veranstaltungsorten können Kartendarstellungen eingebunden
+              werden. Dabei ruft Ihr Browser Darstellungen von den Servern des jeweiligen
+              Kartendienstes ab; dabei können die üblichen technischen Daten (u. a.
+              IP-Adresse, Browsermerkmale) übermittelt werden. Rechtsgrundlage: Art. 6
+              Abs. 1 lit. f DSGVO (nutzerfreundliche Darstellung von Ortsangaben).
             </p>
-            <h3 className="legal-h3">6.2 Geocoding (Nominatim)</h3>
             <p>
-              Damit Ortstexte auf der Karte erscheinen, ruft unser Server die
-              Schnittstelle <strong>Nominatim</strong> (OpenStreetMap) auf und übergibt dabei die
-              eingegebenen bzw. angezeigten Orts-/Adressbezeichnungen (Suchanfragen).
-              Es findet also eine serverseitige Anfrage von unserem Hosting-Anbieter aus
-              an <code>nominatim.openstreetmap.org</code> statt. Dabei können auch dort technische
-              Zugriffsdaten (u. a. IP-Adresse des anfragenden Servers) verarbeitet
-              werden. Wir beachten bei der Nutzung eine moderate Anfragerate. Mehr zu
-              Nominatim:{" "}
-              <a
-                href="https://operations.osmfoundation.org/policies/nominatim/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="legal-link"
-              >
-                operations.osmfoundation.org/policies/nominatim/
-              </a>
+              Die Zuordnung von Ortsnamen zu Koordinaten erfolgt auf unserem Server (nicht
+              direkt aus Ihrem Browser heraus), mit Übermittlung der für die Suche
+              nötigen Ortsbezeichnungen an den technischen Dienst des Kartendienstes;
+              weitergehende personenbezogene Angaben aus dem Formular werden dafür nicht
+              weitergegeben. Wir nutzen öffentlich dokumentierte Nutzungsregeln und
+              halten das Anfragenvolumen moderat.
             </p>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-fonts">
             <h2 id="ds-fonts">7. Schriftarten</h2>
             <p>
-              Wir binden Schriftarten über das Paket{" "}
-              <code>next/font</code> von Next.js ein. Die Schriftdateien werden in der Regel beim
-              Build Ihrer Seite optimiert und über unsere eigene Domain ausgeliefert, sodass
-              beim Besuch der Website in der Regel keine direkte Verbindung Ihres
-              Browsers zu Drittanbietern zu Zwecken der Schriftauslieferung nötig ist.
+              Schriftarten werden technisch so eingebunden, dass sie in der Regel über
+              diese Website ausgeliefert werden und beim Seitenbesuch keine separate
+              Schrift-Auslieferung durch weitere Anbieter nötig ist.
             </p>
           </section>
 
           <section className="legal-block" aria-labelledby="ds-cookies">
             <h2 id="ds-cookies">8. Cookies und vergleichbare Technologien</h2>
             <p>
-              Für den geschützten Bereich <strong>„Für Coaches“</strong> (Login von Coaches und
-              Administratoren) setzen wir ein technisch notwendiges{" "}
-              <strong>HTTP-Cookie</strong> (<code>eirenia_session</code>), um Ihre Sitzung zu erkennen. Es
-              ist <code>httpOnly</code>, <code>sameSite=lax</code> und in der Produktionsumgebung mit dem Flag{" "}
-              <code>Secure</code> markiert. Die Speicherdauer entspricht der Sitzungsdauer (bis zu
-              etwa 7 Tage). Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
-              Interesse an einem sicheren Zugang zum geschützten Bereich).
+              Für den geschützten Bereich <strong>„Für Coaches“</strong> (Login registrierter
+              Mitwirkender und administrativer Zugang) setzen wir ein technisch
+              notwendiges <strong>Sitzungs-Cookie</strong> ein, um Ihre Anmeldung am geschützten Bereich
+              zu erkennen. Es ist technisch gehärtet (u. a. <code>httpOnly</code>,{" "}
+              <code>sameSite=lax</code>, in der Live-Umgebung <code>Secure</code>). Die Speicherdauer
+              entspricht der Sitzungsdauer (bis zu etwa 7 Tage). Rechtsgrundlage ist Art.
+              6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren Zugang zum
+              geschützten Bereich).
             </p>
             <p>
               Im übrigen öffentlichen Bereich der Website setzen wir keine Marketing-
-              oder Analyse-Cookies ein.
+              oder Analyse-Cookies ein. Eine nutzungsorientierte Messung kann über den
+              Hosting-Anbieter ohne herkömmliche Werbe-Cookies erfolgen (vgl. Abschnitt
+              Hosting).
             </p>
           </section>
 
@@ -236,7 +205,7 @@ export default function DatenschutzPage() {
             </ul>
             <p>
               Zweck ist die Organisation der Veranstaltung und die Kontaktaufnahme. Die
-              Daten werden in unserer Datenbank gespeichert; zugleich können
+              Daten werden bei uns elektronisch gesichert gespeichert; zugleich können
               Benachrichtigungs-E-Mails an Sie und den jeweiligen Kurs-Coach versendet
               werden (siehe Abschnitt E-Mail). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
               DSGVO (vorvertragliche Maßnahmen bzw. Vertragserfüllung). Sofern gesondert
@@ -246,15 +215,15 @@ export default function DatenschutzPage() {
           </section>
 
           <section className="legal-block" aria-labelledby="ds-coach">
-            <h2 id="ds-coach">10. Coach- und Admin-Bereich</h2>
+            <h2 id="ds-coach">10. Registrierte Mitwirkende (geschlossener Bereich)</h2>
             <p>
-              Coaches und Administratoren können sich registrieren bzw. anmelden. Dabei
-              werden die angegebenen Stammdaten (z. B. Name, E-Mail, Telefon, optional
-              Kurzbiografie, Passwort in gehashter Form), Rolle und Status sowie
-              inhaltliche Angaben zu Kursen verarbeitet und in der Datenbank gespeichert.
-              Zweck ist die Bereitstellung und Moderation der Plattform. Rechtsgrundlage
-              ist Art. 6 Abs. 1 lit. b DSGVO und ggf. Art. 6 Abs. 1 lit. f DSGVO (Betrieb
-              eines geschlossenen Verwaltungsbereichs).
+              Personen mit Zugang zum geschlossenen Bereich können sich registrieren bzw.
+              anmelden. Dabei werden die angegebenen Stammdaten (z. B. Name, E-Mail,
+              Telefon, optional Kurzbiografie, Passwort in nicht lesbarer Form), Rolle und
+              Status sowie inhaltliche Angaben zu Kursen verarbeitet und gespeichert.
+              Zweck ist die Organisation unseres Angebots und die Pflege der öffentlich
+              dargestellten Programme. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO und
+              ggf. Art. 6 Abs. 1 lit. f DSGVO (Betrieb eines internen Verwaltungsbereichs).
             </p>
           </section>
 
@@ -279,9 +248,10 @@ export default function DatenschutzPage() {
             <p>
               Wir speichern personenbezogene Daten nur so lange, wie dies für die
               jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungsfristen
-              bestehen. Kursanmeldungen und Coach-Daten werden gelöscht, sobald sie für
-              den Zweck nicht mehr benötigt werden und keine rechtlichen Pflichten
-              entgegenstehen, oder wenn ein gesetzlich zulässiger Löschanspruch besteht.
+              bestehen. Daten aus Anmeldungen und aus dem Bereich für registrierte
+              Mitwirkende werden gelöscht, sobald sie für den jeweiligen Zweck nicht mehr
+              benötigt werden und keine rechtlichen Pflichten entgegenstehen, oder wenn ein
+              gesetzlich zulässiger Löschanspruch besteht.
             </p>
           </section>
 

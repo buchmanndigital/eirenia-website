@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Cormorant, Lato, Playfair_Display } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
@@ -39,7 +40,10 @@ export default function RootLayout({
       lang="de"
       className={`${lato.variable} ${playfair.variable} ${cormorant.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
