@@ -8,6 +8,8 @@ export type ProgrammeItem = {
   coachName: string;
   duration: string;
   location: string;
+  address: string;
+  courseDate: string;
   about: string;
   expectations: string[];
 };
@@ -22,6 +24,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Andreas Zettel",
     duration: "ca. 2–3 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-06-12T18:30:00.000Z",
     about:
       "In diesem Ritual kommen wir gemeinsam im Kreis zusammen – begleitet von einer liebevoll zubereiteten Kakao-Zeremonie. Der Cacao öffnet das Herz, verbindet uns mit uns selbst und miteinander und schafft Raum für echte, tiefe Begegnung.",
     expectations: [
@@ -40,6 +44,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Andreas Zettel",
     duration: "ca. 90 Minuten",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-06-19T19:00:00.000Z",
     about:
       "Ein stiller Raum, in dem du nichts leisten musst. Andreas begleitet dich in eine Meditation, die dich zurück in dein Sein, deine Klarheit und deine innere Ruhe führt.",
     expectations: [
@@ -59,6 +65,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Andreas Zettel",
     duration: "ca. 2 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-06-26T18:00:00.000Z",
     about:
       "Ein energetischer Kreis für Bewusstwerdung, Loslassen und die Rückkehr zu deinem inneren Frieden. Andreas hält den Raum, in dem du weich werden und dich erinnern darfst.",
     expectations: [
@@ -77,6 +85,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Andreas Zettel",
     duration: "ca. 2 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-07-03T17:30:00.000Z",
     about:
       "Ein achtsamer Blick auf Ausdruck, Wesen und Selbstbild. Du erforschst, was dein Gesicht über deine Kraft, deine Geschichte und deinen Weg erzählen darf.",
     expectations: [
@@ -96,6 +106,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Julia",
     duration: "ca. 2–3 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-07-10T18:00:00.000Z",
     about:
       "Systemische Arbeit macht sichtbar, was im Verborgenen wirkt. In einem getragenen Feld dürfen Beziehungen, Muster und Familienthemen neu betrachtet werden.",
     expectations: [
@@ -115,6 +127,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Michael",
     duration: "ca. 2 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-07-17T18:00:00.000Z",
     about:
       "Über bewussten Atem findest du zurück in Präsenz, Energie und innere Weite. Michael begleitet dich sicher durch eine intensive und zugleich achtsame Atemreise.",
     expectations: [
@@ -134,6 +148,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Tobi",
     duration: "ca. 2 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-07-24T19:00:00.000Z",
     about:
       "Eine geführte Reise in entspannte Bewusstseinszustände, in denen neue innere Bilder, Klarheit und Transformation entstehen dürfen.",
     expectations: [
@@ -153,6 +169,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Ela",
     duration: "ca. 90 Minuten",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-07-31T17:00:00.000Z",
     about:
       "Ein sanfter Yoga-Flow für Balance, Erdung und Verbindung. Ela führt dich durch Bewegung, Atem und Stille zurück in deinen Körper.",
     expectations: [
@@ -172,6 +190,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Axel",
     duration: "ca. 90 Minuten",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-08-07T19:30:00.000Z",
     about:
       "Klang öffnet Räume, die Worte nicht erreichen. Axel begleitet dich mit Schwingung, Klangschalen und Stille in tiefe Entspannung.",
     expectations: [
@@ -191,6 +211,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "EIRENIA Team",
     duration: "ca. 3 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-08-14T18:30:00.000Z",
     about:
       "Ein gemeinsamer Filmabend mit Inspiration, Gespräch und Begegnung. Wir schauen nicht nur zu – wir lassen das Gesehene in uns wirken.",
     expectations: [
@@ -210,6 +232,8 @@ export const programmes: ProgrammeItem[] = [
     coachName: "Nina",
     duration: "ca. 2 Stunden",
     location: "EIRENIA Raum, München",
+    address: "Leopoldstraße 45, 80802 München",
+    courseDate: "2026-08-21T18:00:00.000Z",
     about:
       "Zen als Weg in Einfachheit, Präsenz und innere Tiefe. Nina begleitet dich in eine ruhige Praxis, die dich mit Weisheit und Stille verbindet.",
     expectations: [

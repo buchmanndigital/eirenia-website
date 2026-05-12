@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { OsmMap } from "@/components/osm-map";
 import { getPublicCourse } from "@/lib/db/courses";
+import { formatCourseDate } from "@/lib/date-format";
 import { registerForCourseAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +23,14 @@ export default async function ProgrammeDetailPage({
   if (!course) {
     notFound();
   }
+
+  const courseMapPlaces = Array.from(
+    new Set(
+      [course.address, course.location]
+        .map((s) => (typeof s === "string" ? s.trim() : ""))
+        .filter((s) => s.length >= 2),
+    ),
+  );
 
   return (
     <main className="course-page">
@@ -51,6 +61,13 @@ export default async function ProgrammeDetailPage({
 
           <div className="course-facts">
             <div className="course-fact">
+              <span>✧</span>
+              <div>
+                <strong>Termin</strong>
+                <p>{formatCourseDate(course.courseDate)}</p>
+              </div>
+            </div>
+            <div className="course-fact">
               <span>◷</span>
               <div>
                 <strong>Dauer</strong>
@@ -62,6 +79,7 @@ export default async function ProgrammeDetailPage({
               <div>
                 <strong>Ort</strong>
                 <p>{course.location}</p>
+                <small>{course.address}</small>
               </div>
             </div>
             <div className="course-fact">
@@ -79,6 +97,21 @@ export default async function ProgrammeDetailPage({
               <strong>🌿 Herzensöffnung mit Freude</strong>
               <p>{course.donationText}</p>
             </div>
+          </article>
+
+          <article className="course-map-card">
+            <div>
+              <span className="admin-eyebrow">Anreise</span>
+              <h2>Hier findet dein Kreis statt</h2>
+              <p>{course.address}</p>
+            </div>
+            {courseMapPlaces.length > 0 ? (
+              <OsmMap
+                places={courseMapPlaces}
+                title={`Karte ${course.title}`}
+                className="osm-map--detail"
+              />
+            ) : null}
           </article>
         </div>
 

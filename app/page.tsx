@@ -14,6 +14,9 @@ import { VisionSection } from "@/components/sections/vision-section";
 import { KontaktSection } from "@/components/sections/kontakt-section";
 import { CoachingSection } from "@/components/sections/coaching-section";
 
+/** Kursliste kommt aus der DB und soll nicht beim Build „eingefroren“ werden. */
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <>

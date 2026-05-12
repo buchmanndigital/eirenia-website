@@ -26,6 +26,8 @@ export type Course = {
   about: string;
   duration: string;
   location: string;
+  address: string;
+  courseDate: string | null;
   expectations: string[];
   donationText: string;
   status: CourseStatus;

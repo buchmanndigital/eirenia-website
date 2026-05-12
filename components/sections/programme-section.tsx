@@ -1,4 +1,5 @@
 import { getPublishedCourses } from "@/lib/db/courses";
+import { ProgrammeExplorer } from "../programme-explorer";
 import { Reveal } from "../reveal";
 
 export async function ProgrammeSection() {
@@ -40,30 +41,7 @@ export async function ProgrammeSection() {
           </div>
         </Reveal>
         <Reveal>
-          <div className="pgrid">
-            {courses.map((course) => (
-              <div key={course.slug} className="pc">
-                <div className="pci">{course.emoji}</div>
-                <span className="pn">{course.title}</span>
-                <span
-                  className="pt"
-                  style={course.categoryColor ? { color: course.categoryColor } : undefined}
-                >
-                  {course.category}
-                </span>
-                <span className="pe">{course.subtitle}</span>
-                <a href={`/programme/${course.slug}`} className="pl">
-                  Details ansehen →
-                </a>
-              </div>
-            ))}
-            {courses.length === 0 && (
-              <p className="programme-empty">
-                Aktuell sind keine Kurse veröffentlicht. Schau bald wieder vorbei
-                oder melde dich bei uns.
-              </p>
-            )}
-          </div>
+          <ProgrammeExplorer courses={courses} />
         </Reveal>
         <div style={{ textAlign: "center" }}>
           <Reveal>

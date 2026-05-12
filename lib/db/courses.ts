@@ -9,7 +9,7 @@ const donationText =
 type CourseRow = {
   id: string;
   coach_id: string;
-  coach_name: string;
+  coach_name: string | null;
   title: string;
   slug: string;
   emoji: string;
@@ -19,6 +19,8 @@ type CourseRow = {
   about: string;
   duration: string;
   location: string;
+  address: string | null;
+  course_date: Date | string | null;
   expectations: string[] | string;
   donation_text: string;
   status: CourseStatus;
@@ -26,10 +28,17 @@ type CourseRow = {
   updated_at: string;
 };
 
+function programmeCatalogFromFile(): Course[] {
+  return programmes.map(programmeToCourse);
+}
+
 export async function getPublishedCourses(): Promise<Course[]> {
   if (!hasDatabase) {
-    return programmes.map(programmeToCourse);
+    return programmeCatalogFromFile();
   }
+
+  const allowDevFallback =
+    process.env.NODE_ENV !== "production" && process.env.PROGRAMMES_DB_STRICT !== "1";
 
   try {
     await ensureDatabaseReady();
@@ -38,12 +47,20 @@ export async function getPublishedCourses(): Promise<Course[]> {
         c.*,
         u.name AS coach_name
       FROM courses c
-      JOIN admin_users u ON u.id = c.coach_id
+      LEFT JOIN admin_users u ON u.id = c.coach_id
       WHERE c.status = 'published'
-      ORDER BY c.created_at ASC
+      ORDER BY c.course_date ASC NULLS LAST, c.created_at ASC
     `;
-    return result.rows.map(mapCourseRow);
-  } catch {
+    const rows = result.rows.map(mapCourseRow);
+    if (rows.length === 0 && allowDevFallback) {
+      return programmeCatalogFromFile();
+    }
+    return rows;
+  } catch (err) {
+    if (allowDevFallback) {
+      console.warn("[getPublishedCourses] DB nicht erreichbar – statischer Katalog:", err);
+      return programmeCatalogFromFile();
+    }
     return [];
   }
 }
@@ -61,7 +78,7 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
         c.*,
         u.name AS coach_name
       FROM courses c
-      JOIN admin_users u ON u.id = c.coach_id
+      LEFT JOIN admin_users u ON u.id = c.coach_id
       WHERE c.slug = ${slug} AND c.status = 'published'
       LIMIT 1
     `;
@@ -79,14 +96,14 @@ export async function getCoursesForUser(userId: string, isAdmin: boolean) {
         SELECT c.*, u.name AS coach_name
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
-        ORDER BY c.updated_at DESC
+        ORDER BY c.course_date ASC NULLS LAST, c.updated_at DESC
       `
     : await sql<CourseRow>`
         SELECT c.*, u.name AS coach_name
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
         WHERE c.coach_id = ${userId}
-        ORDER BY c.updated_at DESC
+        ORDER BY c.course_date ASC NULLS LAST, c.updated_at DESC
       `;
 
   return result.rows.map(mapCourseRow);
@@ -156,6 +173,8 @@ function programmeToCourse(programme: (typeof programmes)[number]): Course {
     about: programme.about,
     duration: programme.duration,
     location: programme.location,
+    address: programme.address,
+    courseDate: programme.courseDate,
     expectations: programme.expectations,
     donationText,
     status: "published",
@@ -173,7 +192,7 @@ function mapCourseRow(row: CourseRow): Course {
   return {
     id: row.id,
     coachId: row.coach_id,
-    coachName: row.coach_name,
+    coachName: row.coach_name ?? "EIRENIA",
     title: row.title,
     slug: row.slug,
     emoji: row.emoji,
@@ -183,10 +202,20 @@ function mapCourseRow(row: CourseRow): Course {
     about: row.about,
     duration: row.duration,
     location: row.location,
+    address: row.address || row.location,
+    courseDate: normalizeDate(row.course_date),
     expectations,
     donationText: row.donation_text,
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+function normalizeDate(value: Date | string | null) {
+  if (!value) {
+    return null;
+  }
+
+  return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 }

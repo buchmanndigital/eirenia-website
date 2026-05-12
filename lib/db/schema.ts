@@ -38,6 +38,8 @@ export async function ensureDatabaseReady() {
       about TEXT NOT NULL,
       duration TEXT NOT NULL,
       location TEXT NOT NULL,
+      address TEXT,
+      course_date TIMESTAMPTZ,
       expectations JSONB NOT NULL DEFAULT '[]'::jsonb,
       donation_text TEXT NOT NULL,
       status TEXT NOT NULL CHECK (status IN ('draft', 'pending', 'published')),
@@ -45,6 +47,10 @@ export async function ensureDatabaseReady() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+
+  await sql`ALTER TABLE courses ADD COLUMN IF NOT EXISTS address TEXT`;
+  await sql`ALTER TABLE courses ADD COLUMN IF NOT EXISTS course_date TIMESTAMPTZ`;
+  await sql`UPDATE courses SET address = location WHERE address IS NULL OR address = ''`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS course_registrations (
@@ -60,30 +66,78 @@ export async function ensureDatabaseReady() {
     )
   `;
 
-  await seedAndreas();
+  await seedProgrammeCatalog();
 }
 
-async function seedAndreas() {
-  const andreasId = "andreas-zettel";
-  const email = "andreas@eirenia.de";
-  const password =
+/** Feste Coach-Zuordnung für Beispiel-Katalog (Passwörter außer Andreas nur für DB-FK, nicht zum Login gedacht). */
+const SEED_COACH_META: Record<
+  string,
+  { id: string; email: string; role: "admin" | "coach" }
+> = {
+  "Andreas Zettel": {
+    id: "andreas-zettel",
+    email: "andreas@eirenia.de",
+    role: "admin",
+  },
+  Julia: {
+    id: "coach-julia",
+    email: "seed.julia@eirenia.invalid",
+    role: "coach",
+  },
+  Michael: {
+    id: "coach-michael",
+    email: "seed.michael@eirenia.invalid",
+    role: "coach",
+  },
+  Tobi: {
+    id: "coach-tobi",
+    email: "seed.tobi@eirenia.invalid",
+    role: "coach",
+  },
+  Ela: {
+    id: "coach-ela",
+    email: "seed.ela@eirenia.invalid",
+    role: "coach",
+  },
+  Axel: {
+    id: "coach-axel",
+    email: "seed.axel@eirenia.invalid",
+    role: "coach",
+  },
+  Nina: {
+    id: "coach-nina",
+    email: "seed.nina@eirenia.invalid",
+    role: "coach",
+  },
+  "EIRENIA Team": {
+    id: "coach-eirenia-team",
+    email: "seed.team@eirenia.invalid",
+    role: "coach",
+  },
+};
+
+async function seedProgrammeCatalog() {
+  const andreasProdEmail = "andreas@eirenia.de";
+  const andreasPassword =
     process.env.ANDREAS_ADMIN_PASSWORD ||
     (process.env.NODE_ENV === "production"
       ? crypto.randomUUID()
       : "Eirenia-Andreas-Dev-2026!");
-  const existing = await sql<{ id: string }>`
-    SELECT id FROM admin_users WHERE email = ${email} LIMIT 1
+
+  const existingAndreasByProdEmail = await sql<{ id: string }>`
+    SELECT id FROM admin_users WHERE email = ${andreasProdEmail} LIMIT 1
   `;
 
-  if (existing.rowCount === 0) {
+  if (existingAndreasByProdEmail.rowCount === 0) {
+    const meta = SEED_COACH_META["Andreas Zettel"]!;
     await sql`
       INSERT INTO admin_users (
         id, name, email, password_hash, role, status, phone, bio
       ) VALUES (
-        ${andreasId},
+        ${meta.id},
         'Andreas Zettel',
-        ${email},
-        ${await hashPassword(password)},
+        ${andreasProdEmail},
+        ${await hashPassword(andreasPassword)},
         'admin',
         'active',
         NULL,
@@ -92,11 +146,48 @@ async function seedAndreas() {
     `;
   }
 
-  const andreasCourses = programmes.filter(
-    (programme) => programme.coachName === "Andreas Zettel",
-  );
+  for (const [coachName, meta] of Object.entries(SEED_COACH_META)) {
+    if (coachName === "Andreas Zettel") {
+      continue;
+    }
 
-  for (const course of andreasCourses) {
+    const existing = await sql<{ id: string }>`
+      SELECT id FROM admin_users WHERE email = ${meta.email} LIMIT 1
+    `;
+
+    if (existing.rowCount === 0) {
+      await sql`
+        INSERT INTO admin_users (
+          id, name, email, password_hash, role, status, phone, bio
+        ) VALUES (
+          ${meta.id},
+          ${coachName},
+          ${meta.email},
+          ${await hashPassword(crypto.randomUUID())},
+          ${meta.role},
+          'active',
+          NULL,
+          NULL
+        )
+      `;
+    }
+  }
+
+  const andreasCoachRow = await sql<{ id: string }>`
+    SELECT id FROM admin_users WHERE email = ${andreasProdEmail} LIMIT 1
+  `;
+  const andreasCoachId =
+    andreasCoachRow.rows[0]?.id ?? SEED_COACH_META["Andreas Zettel"]!.id;
+
+  for (const course of programmes) {
+    const meta = SEED_COACH_META[course.coachName];
+    if (!meta) {
+      continue;
+    }
+
+    const coachId =
+      course.coachName === "Andreas Zettel" ? andreasCoachId : meta.id;
+
     await sql`
       INSERT INTO courses (
         id,
@@ -110,12 +201,14 @@ async function seedAndreas() {
         about,
         duration,
         location,
+        address,
+        course_date,
         expectations,
         donation_text,
         status
       ) VALUES (
         ${course.slug},
-        ${andreasId},
+        ${coachId},
         ${course.name},
         ${course.slug},
         ${course.emoji},
@@ -125,11 +218,17 @@ async function seedAndreas() {
         ${course.about},
         ${course.duration},
         ${course.location},
+        ${course.address},
+        ${course.courseDate},
         ${JSON.stringify(course.expectations)}::jsonb,
         ${donationText},
         'published'
       )
-      ON CONFLICT (slug) DO NOTHING
+      ON CONFLICT (slug) DO UPDATE SET
+        coach_id = EXCLUDED.coach_id,
+        address = COALESCE(NULLIF(TRIM(courses.address), ''), EXCLUDED.address),
+        course_date = COALESCE(courses.course_date, EXCLUDED.course_date),
+        location = COALESCE(NULLIF(TRIM(courses.location), ''), EXCLUDED.location)
     `;
   }
 }

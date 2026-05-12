@@ -101,6 +101,9 @@ export async function upsertCourseAction(formData: FormData) {
   const courseId = value(formData, "courseId");
   const coachId = user.role === "admin" ? value(formData, "coachId") || user.id : user.id;
   const title = value(formData, "title");
+  const courseDate = value(formData, "courseDate");
+  const location = value(formData, "location");
+  const address = value(formData, "address");
   const rawSlug = value(formData, "slug");
   const slug = rawSlug ? slugify(rawSlug) : slugify(title);
   const expectations = value(formData, "expectations")
@@ -110,7 +113,7 @@ export async function upsertCourseAction(formData: FormData) {
   const status = value(formData, "status") as CourseStatus;
   const allowedStatus = user.role === "admin" ? status : "pending";
 
-  if (!title || !slug || !coachId) {
+  if (!title || !slug || !coachId || !courseDate || !location || !address) {
     redirect(courseId ? `/admin/courses/${courseId}?error=invalid` : "/admin/courses/new?error=invalid");
   }
 
@@ -134,7 +137,9 @@ export async function upsertCourseAction(formData: FormData) {
         subtitle = ${value(formData, "subtitle")},
         about = ${value(formData, "about")},
         duration = ${value(formData, "duration")},
-        location = ${value(formData, "location")},
+        location = ${location},
+        address = ${address},
+        course_date = ${new Date(courseDate).toISOString()},
         expectations = ${JSON.stringify(expectations)}::jsonb,
         donation_text = ${value(formData, "donationText")},
         status = ${allowedStatus},
@@ -161,6 +166,8 @@ export async function upsertCourseAction(formData: FormData) {
       about,
       duration,
       location,
+      address,
+      course_date,
       expectations,
       donation_text,
       status
@@ -175,7 +182,9 @@ export async function upsertCourseAction(formData: FormData) {
       ${value(formData, "subtitle")},
       ${value(formData, "about")},
       ${value(formData, "duration")},
-      ${value(formData, "location")},
+      ${location},
+      ${address},
+      ${new Date(courseDate).toISOString()},
       ${JSON.stringify(expectations)}::jsonb,
       ${value(formData, "donationText")},
       ${allowedStatus}

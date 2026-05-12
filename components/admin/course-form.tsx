@@ -1,5 +1,6 @@
 import type { AdminUser, Course } from "@/lib/db/types";
 import { upsertCourseAction } from "@/app/admin/actions";
+import { toDateTimeLocal } from "@/lib/date-format";
 
 const defaultDonationText =
   "Diese Begegnung findet auf Spendenbasis statt. Du gibst, was sich für dich stimmig anfühlt – aus deinem Herzen heraus, ohne Verpflichtung, ohne Erwartung. Jeder ist willkommen, ganz gleich, was er mitbringt. Was zählt, ist deine Anwesenheit und dein offenes Herz.";
@@ -70,12 +71,33 @@ export function CourseForm({ user, coaches, course }: CourseFormProps) {
 
       <div className="admin-grid-2">
         <label>
+          Datum & Uhrzeit
+          <input
+            name="courseDate"
+            type="datetime-local"
+            defaultValue={toDateTimeLocal(course?.courseDate)}
+            required
+          />
+        </label>
+        <label>
           Dauer
           <input name="duration" defaultValue={course?.duration} required />
         </label>
+      </div>
+
+      <div className="admin-grid-2">
         <label>
-          Ort
+          Ort / Raumname
           <input name="location" defaultValue={course?.location} required />
+        </label>
+        <label>
+          Genaue Adresse
+          <input
+            name="address"
+            defaultValue={course?.address}
+            placeholder="Straße Hausnummer, PLZ Ort"
+            required
+          />
         </label>
       </div>
 
