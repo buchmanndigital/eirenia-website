@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { NavLogo } from "./icons/nav-logo";
 
@@ -15,23 +16,23 @@ export function SiteNav() {
 
   return (
     <nav id="nb" className={scrolled ? "scrolled" : undefined}>
-      <a href="#hero" className="nl">
+      <Link href="/#hero" className="nl">
         <NavLogo size={42} />
         <div className="lt">
           <span className="wm">EIRENIA</span>
           <span className="tg">The Return to Peace</span>
         </div>
-      </a>
+      </Link>
       <div className="nr">
         <div className="nlinks">
-          <a href="#mission">Mission</a>
-          <a href="#programme">Programme</a>
-          <a href="#sternstunde">Sternstunde</a>
-          <a href="#coaching">Coaching</a>
+          <Link href="/#mission">Mission</Link>
+          <Link href="/#programme">Programme</Link>
+          <Link href="/#sternstunde">Sternstunde</Link>
+          <Link href="/#coaching">Coaching</Link>
         </div>
-        <a href="#kontakt" className="nbtn">
+        <Link href="/#kontakt" className="nbtn">
           Kontakt
-        </a>
+        </Link>
       </div>
     </nav>
   );

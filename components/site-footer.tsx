@@ -24,12 +24,14 @@ export function SiteFooter() {
       <span className="fwm">EIRENIA</span>
       <span className="ftg">The Return to Peace</span>
       <nav className="fnav">
-        <a href="#hero">Home</a>
-        <a href="#mission">Mission</a>
-        <a href="#programme">Programme</a>
-        <a href="#sternstunde">Sternstunde</a>
-        <a href="#kontakt">Kontakt</a>
+        <Link href="/#hero">Home</Link>
+        <Link href="/#mission">Mission</Link>
+        <Link href="/#programme">Programme</Link>
+        <Link href="/#sternstunde">Sternstunde</Link>
+        <Link href="/#kontakt">Kontakt</Link>
         <Link href={COACH_AREA}>Für Coaches</Link>
+        <Link href="/impressum">Impressum</Link>
+        <Link href="/datenschutz">Datenschutz</Link>
       </nav>
       <div className="fdiv2" />
       <p className="fcp">
