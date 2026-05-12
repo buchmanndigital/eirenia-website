@@ -3,6 +3,8 @@
 import crypto from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { getPublicCourseRegistrationTarget } from "@/lib/db/courses";
+import { sendRegistrationEmails } from "@/lib/email/registration-mail";
 import { hasDatabase, sql } from "@/lib/db/connection";
 import { ensureDatabaseReady } from "@/lib/db/schema";
 
@@ -18,14 +20,17 @@ export async function registerForCourseAction(formData: FormData) {
   }
 
   await ensureDatabaseReady();
-  const course = await sql<{ id: string }>`
-    SELECT id FROM courses WHERE slug = ${slug} AND status = 'published' LIMIT 1
-  `;
-  const courseId = course.rows[0]?.id;
+  const target = await getPublicCourseRegistrationTarget(slug);
 
-  if (!courseId) {
+  if (!target) {
     redirect(`/programme/${slug}?error=missing`);
   }
+
+  const firstName = value(formData, "firstName");
+  const lastName = value(formData, "lastName");
+  const email = value(formData, "email");
+  const phone = value(formData, "phone") || null;
+  const message = value(formData, "message") || null;
 
   await sql`
     INSERT INTO course_registrations (
@@ -39,15 +44,33 @@ export async function registerForCourseAction(formData: FormData) {
       accepted_terms
     ) VALUES (
       ${crypto.randomUUID()},
-      ${courseId},
-      ${value(formData, "firstName")},
-      ${value(formData, "lastName")},
-      ${value(formData, "email")},
-      ${value(formData, "phone") || null},
-      ${value(formData, "message") || null},
+      ${target.id},
+      ${firstName},
+      ${lastName},
+      ${email},
+      ${phone},
+      ${message},
       ${formData.get("terms") === "on"}
     )
   `;
+
+  try {
+    await sendRegistrationEmails({
+      participantEmail: email,
+      participantFirstName: firstName,
+      participantLastName: lastName,
+      participantPhone: phone,
+      participantMessage: message,
+      courseTitle: target.title,
+      courseSlug: target.slug,
+      courseDateIso: target.courseDate,
+      courseLocation: target.location,
+      coachEmail: target.coachEmail,
+      coachName: target.coachName,
+    });
+  } catch (err) {
+    console.error("[registerForCourseAction] E-Mail fehlgeschlagen:", err);
+  }
 
   revalidatePath(`/programme/${slug}`);
   redirect(`/programme/${slug}?sent=1`);

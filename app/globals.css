@@ -2188,6 +2188,68 @@ footer {
   background: rgba(255, 255, 255, 0.6);
 }
 
+.admin-pill--own {
+  border-color: rgba(91, 138, 122, 0.45);
+  background: rgba(91, 138, 122, 0.12);
+  color: #376857;
+}
+
+.admin-course-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
+
+.admin-table-main-link {
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  padding: 0.25rem 0.35rem;
+  margin: -0.25rem -0.35rem;
+}
+
+.admin-table-main-link:hover strong {
+  color: var(--gold);
+}
+
+.admin-status-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: min(100%, 280px);
+}
+
+.admin-status-hint {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--tm2);
+  opacity: 0.92;
+}
+
+.admin-inline-form button.admin-button-quiet {
+  background: var(--white);
+  color: var(--ocean);
+  border: 1px solid rgba(42, 62, 79, 0.28);
+}
+
+.admin-inline-form button.admin-button-quiet:hover {
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.admin-inline-form button.admin-button-danger {
+  background: rgba(232, 100, 74, 0.12);
+  color: #9b3e2a;
+  border: 1px solid rgba(232, 100, 74, 0.35);
+}
+
+.admin-inline-form button.admin-button-danger:hover {
+  background: rgba(232, 100, 74, 0.2);
+}
+
 .admin-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

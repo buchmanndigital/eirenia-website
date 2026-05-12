@@ -218,7 +218,9 @@ export async function upsertCourseAction(formData: FormData) {
 }
 
 export async function approveCourseAction(formData: FormData) {
+  requireDatabase();
   await requireAdmin();
+  await ensureDatabaseReady();
   const courseId = value(formData, "courseId");
   const status = value(formData, "status") as CourseStatus;
   if (!["draft", "pending", "published"].includes(status)) {
@@ -236,4 +238,23 @@ export async function approveCourseAction(formData: FormData) {
   if (slug) {
     revalidatePath(`/programme/${slug}`);
   }
+  redirect("/admin/courses");
+}
+
+export async function deleteCourseRegistrationAction(formData: FormData) {
+  requireDatabase();
+  await requireAdmin();
+  await ensureDatabaseReady();
+  const registrationId = value(formData, "registrationId");
+  const courseId = value(formData, "courseId");
+  if (!registrationId || !courseId) {
+    redirect("/admin/courses");
+  }
+  const result = await sql`
+    DELETE FROM course_registrations
+    WHERE id = ${registrationId} AND course_id = ${courseId}
+  `;
+  const deleted = (result.rowCount ?? 0) > 0;
+  revalidatePath(`/admin/courses/${courseId}`);
+  redirect(`/admin/courses/${courseId}${deleted ? "?regdeleted=1" : "?error=regdel"}`);
 }

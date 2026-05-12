@@ -137,6 +137,66 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
   return programme ? programmeToCourse(programme) : null;
 }
 
+/** Nur Kurse, die öffentlich sichtbar und anmeldbar sind (published, Coach nicht blockiert). */
+export type PublicCourseRegistrationTarget = {
+  id: string;
+  title: string;
+  slug: string;
+  location: string;
+  courseDate: string | null;
+  coachEmail: string;
+  coachName: string;
+};
+
+export async function getPublicCourseRegistrationTarget(
+  slug: string,
+): Promise<PublicCourseRegistrationTarget | null> {
+  if (!hasDatabase) {
+    return null;
+  }
+
+  await ensureDatabaseReady();
+  const result = await sql<{
+    id: string;
+    title: string;
+    slug: string;
+    location: string;
+    course_date: Date | string | null;
+    coach_email: string;
+    coach_name: string | null;
+  }>`
+    SELECT
+      c.id,
+      c.title,
+      c.slug,
+      c.location,
+      c.course_date,
+      u.email AS coach_email,
+      u.name AS coach_name
+    FROM courses c
+    INNER JOIN admin_users u ON u.id = c.coach_id
+    WHERE c.slug = ${slug}
+      AND c.status = 'published'
+      AND u.status != 'blocked'
+    LIMIT 1
+  `;
+
+  const row = result.rows[0];
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    location: row.location,
+    courseDate: normalizeDate(row.course_date),
+    coachEmail: row.coach_email,
+    coachName: row.coach_name ?? "",
+  };
+}
+
 export async function getCoursesForUser(userId: string, isAdmin: boolean) {
   await ensureDatabaseReady();
 

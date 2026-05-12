@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 type ProgrammeDetailPageProps = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ sent?: string }>;
+  searchParams: Promise<{ sent?: string; error?: string }>;
 };
 
 export default async function ProgrammeDetailPage({
@@ -121,7 +121,16 @@ export default async function ProgrammeDetailPage({
             <h2>Ich möchte dabei sein</h2>
             <p>Melde dich jetzt für dieses Programm an</p>
           </div>
-          {query.sent ? (
+          {query.error === "missing" ? (
+            <div className="admin-alert" role="alert">
+              Dieses Programm ist gerade nicht verfügbar oder die Anmeldung wurde geschlossen. Bitte
+              kehre zu den{" "}
+              <Link href="/#programme" className="admin-link">
+                Kursen & Programmen
+              </Link>{" "}
+              zurück.
+            </div>
+          ) : query.sent ? (
             <div className="admin-success">
               Danke für deine Anmeldung. Wir melden uns zeitnah bei dir.
             </div>
