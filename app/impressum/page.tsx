@@ -82,19 +82,26 @@ export default function ImpressumPage() {
           </section>
 
           <section className="legal-block" aria-labelledby="impressum-streit">
-            <h2 id="impressum-streit">EU-Streitschlichtung</h2>
+            <h2 id="impressum-streit">Streitbeilegung</h2>
             <p>
-              Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS)
-              bereit:{" "}
+              Die frühere <strong>EU-Plattform zur Online-Streitbeilegung (ODR)</strong> wurde
+              eingestellt (u. a. mit Wirkung ab Sommer 2025). Allgemeine Informationen der EU-Kommission
+              zur außergerichtlichen Streitbeilegung finden Sie im Portal{" "}
               <a
-                href="https://ec.europa.eu/consumers/odr/"
+                href="https://consumer-redress.ec.europa.eu/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="legal-link"
               >
-                https://ec.europa.eu/consumers/odr/
+                Consumer Redress
               </a>
-              . Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer
+              .
+            </p>
+            <p>
+              <strong>Verbraucherschlichtungsstellen</strong> in Deutschland bestehen weiterhin auf
+              Grundlage des Verbraucherstreitbeilegungsgesetzes (VSBG); zuständige Stellen und
+              Verfahren richten sich nach Art des Streitfalls. Wir sind <strong>nicht verpflichtet</strong> und
+              <strong>nicht bereit</strong>, an einem Streitbeilegungsverfahren vor einer
               Verbraucherschlichtungsstelle teilzunehmen.
             </p>
           </section>
