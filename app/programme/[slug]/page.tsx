@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { OsmMap } from "@/components/osm-map";
 import { getPublicCourse } from "@/lib/db/courses";
@@ -26,6 +27,10 @@ export default async function ProgrammeDetailPage({
     notFound();
   }
 
+  const coachPhotoSrc = course.coachName.toLowerCase().includes("andreas")
+    ? "/andreas-zettel.jpeg"
+    : null;
+
   const courseMapPlaces = Array.from(
     new Set(
       [course.address, course.location]
@@ -36,7 +41,7 @@ export default async function ProgrammeDetailPage({
 
   return (
     <main className="course-page">
-      <Link href="/#programme" className="course-back">
+      <Link href="/#programme-kalender" className="course-back" prefetch={false}>
         ← Zurück zu Kurse & Programme
       </Link>
       <section className="course-hero">
@@ -119,15 +124,34 @@ export default async function ProgrammeDetailPage({
 
         <aside className="course-register-card">
           <div className="course-register-head">
+            {coachPhotoSrc ? (
+              <div className="course-coach-photo-wrap">
+                <Image
+                  src={coachPhotoSrc}
+                  alt={course.coachName}
+                  width={96}
+                  height={96}
+                  className="course-coach-photo"
+                />
+              </div>
+            ) : null}
             <span>{course.emoji}</span>
             <h2>Ich möchte dabei sein</h2>
-            <p>Melde dich jetzt für dieses Programm an</p>
+            <p>
+              Melde dich jetzt für <strong>{course.title}</strong> an.
+            </p>
           </div>
+          {query.error === "pflicht" ? (
+            <div className="admin-alert" role="alert">
+              Bitte fülle alle mit * markierten Felder aus und schreibe mindestens ein paar Worte bei
+              „Deine Nachricht“. Telefon ist ein Pflichtfeld.
+            </div>
+          ) : null}
           {query.error === "missing" ? (
             <div className="admin-alert" role="alert">
               Dieses Programm ist gerade nicht verfügbar oder die Anmeldung wurde geschlossen. Bitte
               kehre zu den{" "}
-              <Link href="/#programme" className="admin-link">
+              <Link href="/#programme" className="admin-link" prefetch={false}>
                 Kursen & Programmen
               </Link>{" "}
               zurück.
@@ -154,18 +178,31 @@ export default async function ProgrammeDetailPage({
                 <input name="email" type="email" placeholder="deine@email.de" required />
               </label>
               <label>
-                Telefon <span>(optional)</span>
-                <input name="phone" type="tel" placeholder="Deine Telefonnummer" />
+                Telefon *
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="Deine Telefonnummer"
+                  required
+                />
               </label>
               <label>
-                Deine Nachricht
-                <textarea name="message" placeholder="Was möchtest du mitteilen oder fragen?" />
+                Deine Nachricht *
+                <textarea
+                  name="message"
+                  placeholder="Was möchtest du mitteilen oder fragen?"
+                  required
+                  minLength={3}
+                />
               </label>
               <label className="course-check">
                 <input name="terms" type="checkbox" required />
                 <span>
-                  Ich habe die Allgemeinen Geschäftsbedingungen gelesen und stimme
-                  ihnen zu. *
+                  Ich habe die{" "}
+                  <Link href="/agb" className="admin-link" target="_blank" rel="noopener noreferrer">
+                    Allgemeinen Geschäftsbedingungen
+                  </Link>{" "}
+                  gelesen und stimme ihnen zu. *
                 </span>
               </label>
               <button type="submit" className="course-submit">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 type GeocodeMarker = {
   lat: number;
@@ -34,6 +34,11 @@ export function OsmMap({ places, className = "", title = "OpenStreetMap-Karte" }
   const canvasRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<import("leaflet").Map | null>(null);
   const [phase, setPhase] = useState<"idle" | "loading" | "ready" | "empty" | "error">("idle");
+
+  const googleSearchQuery = useMemo(() => {
+    const first = places.map((p) => p.trim()).find((p) => p.length >= 2);
+    return first ? encodeURIComponent(first) : "";
+  }, [places]);
 
   const placesKey = places
     .map((p) => p.trim())
@@ -162,6 +167,17 @@ export function OsmMap({ places, className = "", title = "OpenStreetMap-Karte" }
         </div>
       )}
       <div ref={canvasRef} className="osm-map-canvas" role="region" aria-label={title} />
+      {phase === "ready" && googleSearchQuery ? (
+        <p className="osm-map-google">
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${googleSearchQuery}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            In Google Maps öffnen
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }

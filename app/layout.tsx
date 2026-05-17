@@ -39,8 +39,9 @@ export default function RootLayout({
     <html
       lang="de"
       className={`${lato.variable} ${playfair.variable} ${cormorant.variable}`}
+      suppressHydrationWarning
     >
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Analytics />
       </body>

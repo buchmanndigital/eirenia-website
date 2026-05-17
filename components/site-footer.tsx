@@ -23,19 +23,34 @@ export function SiteFooter() {
       </div>
       <span className="fwm">EIRENIA</span>
       <span className="ftg">The Return to Peace</span>
+      <span className="fbyline">EIRENIA by Andreas Zettel</span>
       <nav className="fnav">
-        <Link href="/#hero">Home</Link>
-        <Link href="/#mission">Mission</Link>
-        <Link href="/#programme">Programme</Link>
-        <Link href="/#sternstunde">Sternstunde</Link>
-        <Link href="/#kontakt">Kontakt</Link>
+        <Link href="/#hero" prefetch={false}>
+          Home
+        </Link>
+        <Link href="/#mission" prefetch={false}>
+          Mission
+        </Link>
+        <Link href="/#programme" prefetch={false}>
+          Programme
+        </Link>
+        <Link href="/#sternstunde" prefetch={false}>
+          Sternstunde
+        </Link>
+        <Link href="/#sponsoren" prefetch={false}>
+          Sponsoren
+        </Link>
+        <Link href="/#kontakt" prefetch={false}>
+          Kontakt
+        </Link>
         <Link href={COACH_AREA}>Für Coaches</Link>
+        <Link href="/agb">AGB</Link>
         <Link href="/impressum">Impressum</Link>
         <Link href="/datenschutz">Datenschutz</Link>
       </nav>
       <div className="fdiv2" />
       <p className="fcp">
-        © 2025 EIRENIA. Ein Raum für echte Begegnung, Bewusstwerdung und Heilung.
+        © 2026 EIRENIA. Ein Raum für echte Begegnung, Bewusstwerdung und Heilung.
       </p>
     </footer>
   );

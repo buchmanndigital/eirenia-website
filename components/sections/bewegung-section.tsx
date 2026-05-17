@@ -38,6 +38,12 @@ export function BewegungSection() {
           <span className="bb2">wir öffnen Räume.</span>
         </Reveal>
         <Reveal>
+          <p className="bm-quote">
+            Ein Raum ist ein Platz an dem du dich sicher fühlst, dich fallen lassen
+            kannst, du du sein darfst.
+          </p>
+        </Reveal>
+        <Reveal>
           <p className="bsub">
             Überall dort, wo Menschen sich erinnern, wer sie sind, entsteht ein
             Stück EIRENIA.
@@ -46,7 +52,7 @@ export function BewegungSection() {
         <div style={{ textAlign: "center" }}>
           <Reveal>
             <a
-              href="#kontakt"
+              href="#programme-kalender"
               className="bo"
               style={{
                 color: "rgba(250,248,242,0.65)",

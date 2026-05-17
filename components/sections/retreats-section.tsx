@@ -1,5 +1,30 @@
+import Link from "next/link";
 import { RetreatIcon } from "../icons/retreat-icon";
 import { Reveal } from "../reveal";
+
+const retreatOffers = [
+  {
+    emoji: "🌲",
+    tag: "Natur",
+    title: "Natur & Weite",
+    subtitle: "Retreat",
+    text: "Landschaften und Orte, in denen du zur Ruhe kommst und tief durchatmen kannst.",
+  },
+  {
+    emoji: "🕯️",
+    tag: "Ritual",
+    title: "Ritual & Kreis",
+    subtitle: "Retreat",
+    text: "Gemeinsame Zeremonien und Begegnung im geschützten Rahmen.",
+  },
+  {
+    emoji: "✨",
+    tag: "Licht",
+    title: "Licht & Klarheit",
+    subtitle: "Retreat",
+    text: "Innere Klarheit und Transformation – getragen von erfahrenen Begleitern.",
+  },
+] as const;
 
 export function RetreatsSection() {
   return (
@@ -38,29 +63,28 @@ export function RetreatsSection() {
           </Reveal>
         </div>
         <Reveal>
-          <div className="rtiles">
-            <div className="rt">
-              <span className="ri">🌲</span>
-              <h4>Natur</h4>
-              <p>Weite Landschaften & stille Orte</p>
-            </div>
-            <div className="rt">
-              <span className="ri">🕯️</span>
-              <h4>Ritual</h4>
-              <p>Gemeinsame Zeremonien & Begegnung</p>
-            </div>
-            <div className="rt">
-              <span className="ri">✨</span>
-              <h4>Licht</h4>
-              <p>Innere Klarheit & Transformation</p>
-            </div>
+          <div className="pgrid retreat-offer-grid">
+            {retreatOffers.map((item) => (
+              <div key={item.title} className="pc retreat-offer-card">
+                <div className="course-card-topline">
+                  <div className="pci">{item.emoji}</div>
+                  <span>{item.tag}</span>
+                </div>
+                <span className="pt">{item.subtitle}</span>
+                <span className="pn">{item.title}</span>
+                <span className="pe">{item.text}</span>
+                <Link href="/#programme" className="pl" prefetch={false}>
+                  Zu Kursen & Terminen →
+                </Link>
+              </div>
+            ))}
           </div>
         </Reveal>
         <div style={{ textAlign: "center" }}>
           <Reveal>
-            <a href="#kontakt" className="boc">
-              🌿 Retreats entdecken → Jetzt Platz anfragen
-            </a>
+            <Link href="/#programme" className="boc" prefetch={false}>
+              🌿 Retreats & Programme entdecken
+            </Link>
           </Reveal>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { FormSubmitButton } from "../form-submit-button";
+import { SternstundeForm } from "../sternstunde-form";
 import { Reveal } from "../reveal";
 
 const stars = [
@@ -60,31 +60,7 @@ export function SternstundeSection() {
             <p className="ssit">Du darfst kommen, fühlen, atmen, fragen.</p>
           </Reveal>
           <Reveal>
-            <div className="sfw">
-              <div className="fr">
-                <div className="fg">
-                  <label htmlFor="ss-name">Dein Name</label>
-                  <input id="ss-name" type="text" placeholder="Wie heißt du?" />
-                </div>
-                <div className="fg">
-                  <label htmlFor="ss-email">E-Mail</label>
-                  <input id="ss-email" type="email" placeholder="deine@email.de" />
-                </div>
-              </div>
-              <div className="fg">
-                <label htmlFor="ss-phone">
-                  Telefon <span className="opt">(optional)</span>
-                </label>
-                <input id="ss-phone" type="tel" placeholder="Deine Telefonnummer" />
-              </div>
-              <div className="fg">
-                <label htmlFor="ss-msg">Deine Nachricht</label>
-                <textarea id="ss-msg" placeholder="Was bewegt dich? Was suchst du?" />
-              </div>
-              <FormSubmitButton variant="gold">
-                🌾 Buche deine Sternstunde – Dein erster Schritt zu dir
-              </FormSubmitButton>
-            </div>
+            <SternstundeForm />
           </Reveal>
         </div>
       </div>

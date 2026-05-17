@@ -1,4 +1,4 @@
-import { FormSubmitButton } from "../form-submit-button";
+import { CoachingInquiryForm } from "../coaching-inquiry-form";
 import { FounderPortraitFrame } from "../founder-portrait-frame";
 import { Reveal } from "../reveal";
 
@@ -70,67 +70,7 @@ export function CoachingSection() {
           </Reveal>
         </div>
         <Reveal>
-          <div className="kcard">
-            <div className="fr">
-              <div className="fg">
-                <label htmlFor="c-first">
-                  Vorname{" "}
-                  <span style={{ color: "var(--gold)", fontSize: "0.8rem" }}>*</span>
-                </label>
-                <input id="c-first" type="text" placeholder="Dein Vorname" required />
-              </div>
-              <div className="fg">
-                <label htmlFor="c-last">
-                  Nachname{" "}
-                  <span style={{ color: "var(--gold)", fontSize: "0.8rem" }}>*</span>
-                </label>
-                <input id="c-last" type="text" placeholder="Dein Nachname" required />
-              </div>
-            </div>
-            <div className="fr">
-              <div className="fg">
-                <label htmlFor="c-email">
-                  E-Mail{" "}
-                  <span style={{ color: "var(--gold)", fontSize: "0.8rem" }}>*</span>
-                </label>
-                <input id="c-email" type="email" placeholder="deine@email.de" required />
-              </div>
-              <div className="fg">
-                <label htmlFor="c-phone">
-                  Telefon{" "}
-                  <span style={{ color: "var(--gold)", fontSize: "0.8rem" }}>*</span>{" "}
-                  <span style={{ color: "var(--ts)", fontWeight: 300, fontSize: "0.78rem" }}>
-                    – damit Andreas dich direkt erreicht
-                  </span>
-                </label>
-                <input
-                  id="c-phone"
-                  type="tel"
-                  placeholder="z.B. +49 151 23456789"
-                  required
-                  style={{ borderColor: "rgba(201,168,76,0.5)" }}
-                />
-              </div>
-            </div>
-            <div className="fg">
-              <label htmlFor="c-msg">
-                Deine Nachricht{" "}
-                <span style={{ color: "var(--gold)", fontSize: "0.8rem" }}>*</span>
-              </label>
-              <textarea
-                id="c-msg"
-                style={{ height: 160 }}
-                placeholder="Was bewegt dich? Was erhoffst du dir vom Coaching?"
-                required
-              />
-            </div>
-            <FormSubmitButton
-              variant="goldAfter"
-              idleStyle={{ background: "var(--ocean)", border: "none" }}
-            >
-              1:1 Coaching anfragen
-            </FormSubmitButton>
-          </div>
+          <CoachingInquiryForm />
         </Reveal>
       </div>
     </section>

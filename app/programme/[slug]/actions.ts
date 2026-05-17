@@ -29,8 +29,19 @@ export async function registerForCourseAction(formData: FormData) {
   const firstName = value(formData, "firstName");
   const lastName = value(formData, "lastName");
   const email = value(formData, "email");
-  const phone = value(formData, "phone") || null;
-  const message = value(formData, "message") || null;
+  const phone = value(formData, "phone");
+  const message = value(formData, "message");
+
+  if (!firstName || !lastName || !email || !phone) {
+    redirect(`/programme/${encodeURIComponent(slug)}?error=pflicht`);
+  }
+
+  if (!message || message.length < 3) {
+    redirect(`/programme/${encodeURIComponent(slug)}?error=pflicht`);
+  }
+
+  const phoneValue = phone || null;
+  const messageValue = message || null;
 
   await sql`
     INSERT INTO course_registrations (
@@ -48,8 +59,8 @@ export async function registerForCourseAction(formData: FormData) {
       ${firstName},
       ${lastName},
       ${email},
-      ${phone},
-      ${message},
+      ${phoneValue},
+      ${messageValue},
       ${formData.get("terms") === "on"}
     )
   `;
@@ -59,8 +70,8 @@ export async function registerForCourseAction(formData: FormData) {
       participantEmail: email,
       participantFirstName: firstName,
       participantLastName: lastName,
-      participantPhone: phone,
-      participantMessage: message,
+      participantPhone: phoneValue,
+      participantMessage: messageValue,
       courseTitle: target.title,
       courseSlug: target.slug,
       courseDateIso: target.courseDate,

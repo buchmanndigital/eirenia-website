@@ -14,7 +14,7 @@ export default function DatenschutzPage() {
       <SiteNav />
       <main className="legal-page">
         <div className="legal-page-inner">
-          <Link href="/" className="legal-back">
+          <Link href="/" className="legal-back" prefetch={false}>
             ← Zur Startseite
           </Link>
           <h1>Datenschutzerklärung</h1>

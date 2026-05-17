@@ -5,6 +5,13 @@ import type { Course } from "@/lib/db/types";
 import { formatCourseDate, formatDateKeyChip } from "@/lib/date-format";
 import { OsmMap } from "@/components/osm-map";
 
+function foldUmlauts(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "");
+}
+
 type ProgrammeExplorerProps = {
   courses: Course[];
 };
@@ -35,30 +42,37 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
       .slice(0, 6);
   }, [courses]);
 
-  const locationOptions = useMemo(() => {
-    const seen = new Set<string>();
-    return courses
-      .map((course) => course.address)
-      .filter((address) => {
-        if (!address || seen.has(address)) {
-          return false;
-        }
-        seen.add(address);
-        return true;
-      });
+  const venueOptions = useMemo(() => {
+    const byAddress = new Map<string, string>();
+    for (const course of courses) {
+      const address = (course.address || "").trim();
+      if (!address || byAddress.has(address)) {
+        continue;
+      }
+      const loc = (course.location || "").trim();
+      let label = loc || address.split(",")[0]?.trim() || address;
+      label = label.replace(/\s+/g, " ").trim();
+      if (label.length > 42) {
+        label = `${label.slice(0, 39)}…`;
+      }
+      byAddress.set(address, label);
+    }
+    return Array.from(byAddress.entries())
+      .map(([address, label]) => ({ address, label }))
+      .sort((a, b) => a.label.localeCompare(b.label, "de"));
   }, [courses]);
 
   const visibleCourses = useMemo(() => {
-    const locationNeedle = locationQuery.trim().toLowerCase();
+    const locationNeedle = foldUmlauts(locationQuery.trim());
 
     return courses.filter((course) => {
       const courseDay = course.courseDate
         ? new Date(course.courseDate).toISOString().slice(0, 10)
         : "";
       const matchesDate = selectedDate === "all" || courseDay === selectedDate;
-      const haystack = `${course.location ?? ""} ${course.address ?? ""}`
-        .toLowerCase()
-        .replace(/\s+/g, " ");
+      const haystack = foldUmlauts(
+        `${course.location ?? ""} ${course.address ?? ""}`.replace(/\s+/g, " "),
+      );
       const matchesLocation =
         locationNeedle.length === 0 || haystack.includes(locationNeedle);
 
@@ -172,20 +186,23 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
               </button>
             )}
           </div>
-          {locationOptions.length > 0 && (
-            <div className="location-chips location-chips--dots" role="group" aria-label="Bekannte Orte">
-              {locationOptions.map((address) => (
+          {venueOptions.length > 0 && (
+            <div className="location-chips location-chips--venues" role="group" aria-label="Orte mit Kursen">
+              {venueOptions.map(({ address, label }) => (
                 <button
                   type="button"
                   key={address}
-                  className={locationQuery.trim() === address ? "active" : undefined}
+                  className={`location-chip-venue${locationQuery.trim() === address ? " active" : ""}`}
                   onClick={() => {
                     setLocationQuery(address);
                     requestAnimationFrame(() => scrollMapIntoView());
                   }}
-                  aria-label={address}
                   title={address}
-                />
+                  aria-label={`Ort ${label}: ${address}`}
+                >
+                  <span className="location-chip-venue__marker" aria-hidden />
+                  <span className="location-chip-venue__label">{label}</span>
+                </button>
               ))}
             </div>
           )}

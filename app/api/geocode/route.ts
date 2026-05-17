@@ -23,14 +23,22 @@ type GeocodeMarker = {
 async function nominatimSearch(
   q: string,
 ): Promise<{ lat: number; lon: number; label: string } | null> {
+  const trimmed = q.trim();
+  if (!trimmed) {
+    return null;
+  }
+  const withRegion =
+    /\b(deutschland|germany|österreich|austria|schweiz|switzerland)\b/i.test(trimmed)
+      ? trimmed
+      : `${trimmed}, Deutschland`;
+
   const url = new URL("https://nominatim.openstreetmap.org/search");
   url.searchParams.set("format", "json");
   url.searchParams.set("limit", "1");
-  url.searchParams.set("q", q);
+  url.searchParams.set("q", withRegion);
 
   const res = await fetch(url.toString(), {
     headers: { "User-Agent": UA },
-    next: { revalidate: 60 * 60 * 24 * 7 },
   });
 
   if (!res.ok) {

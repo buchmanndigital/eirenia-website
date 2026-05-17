@@ -14,7 +14,7 @@ export default function ImpressumPage() {
       <SiteNav />
       <main className="legal-page">
         <div className="legal-page-inner">
-          <Link href="/" className="legal-back">
+          <Link href="/" className="legal-back" prefetch={false}>
             ← Zur Startseite
           </Link>
           <h1>Impressum</h1>
@@ -106,8 +106,12 @@ export default function ImpressumPage() {
             </p>
           </section>
           <p style={{ marginTop: "2rem" }}>
+            <Link href="/agb" className="legal-link">
+              Allgemeine Geschäftsbedingungen (AGB)
+            </Link>
+            {" · "}
             <Link href="/datenschutz" className="legal-link">
-              Zur Datenschutzerklärung
+              Datenschutzerklärung
             </Link>
           </p>
         </div>
