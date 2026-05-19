@@ -38,8 +38,7 @@ export function ProgrammeExplorer({ courses }: ProgrammeExplorerProps) {
         }
         seen.add(key);
         return true;
-      })
-      .slice(0, 6);
+      });
   }, [courses]);
 
   const venueOptions = useMemo(() => {
