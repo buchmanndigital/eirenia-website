@@ -310,7 +310,7 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
     email: string;
     phone: string | null;
     message: string | null;
-    created_at: string;
+    created_at: Date | string;
     course_title: string;
   }>`
     SELECT
@@ -329,6 +329,7 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
   const byEmail = new Map<string, CustomerRecord>();
   for (const row of result.rows) {
     const key = row.email.toLowerCase();
+    const createdAt = normalizeDate(row.created_at) ?? new Date(0).toISOString();
     const existing = byEmail.get(key);
     if (!existing) {
       byEmail.set(key, {
@@ -337,7 +338,7 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
         lastName: row.last_name,
         phone: row.phone,
         registrationCount: 1,
-        lastRegistrationAt: row.created_at,
+        lastRegistrationAt: createdAt,
         courses: [row.course_title],
         latestMessage: row.message,
       });
@@ -356,8 +357,9 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
     }
   }
 
-  return Array.from(byEmail.values()).sort((a, b) =>
-    b.lastRegistrationAt.localeCompare(a.lastRegistrationAt),
+  return Array.from(byEmail.values()).sort(
+    (a, b) =>
+      new Date(b.lastRegistrationAt).getTime() - new Date(a.lastRegistrationAt).getTime(),
   );
 }
 
