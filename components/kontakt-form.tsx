@@ -1,33 +1,42 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { submitPublicInquiryAction } from "@/app/contact-actions";
 import { SendIcon } from "./icons/send-icon";
 
-export function KontaktForm() {
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState(false);
+const initialState = { ok: false, error: null };
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const name = String(fd.get("name") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const phone = String(fd.get("phone") || "").trim();
-    const msg = String(fd.get("message") || "").trim();
-    if (!name || !email || !phone || msg.length < 3) {
-      setError(true);
-      return;
-    }
-    setError(false);
-    setSent(true);
-  }
+function KontaktSubmitButton() {
+  const { pending } = useFormStatus();
 
   return (
-    <form className="kcard" onSubmit={onSubmit} noValidate>
-      {error ? (
+    <button
+      type="submit"
+      className="bform"
+      disabled={pending}
+      style={pending ? { background: "#2A3E4F" } : undefined}
+    >
+      {!pending && <SendIcon />}
+      {pending ? "Wird gesendet …" : "Jetzt Verbindung spüren"}
+    </button>
+  );
+}
+
+export function KontaktForm() {
+  const [state, formAction] = useActionState(submitPublicInquiryAction, initialState);
+
+  return (
+    <form className="kcard" action={formAction} noValidate>
+      <input type="hidden" name="source" value="kontakt" />
+      {state.error ? (
         <p className="form-inline-error" role="alert">
-          Bitte fülle alle Pflichtfelder aus und schreibe mindestens ein paar Worte in
-          der Nachricht.
+          {state.error}
+        </p>
+      ) : null}
+      {state.ok ? (
+        <p className="form-inline-success" role="status">
+          Danke, deine Nachricht wurde gesendet. Wir melden uns bei dir.
         </p>
       ) : null}
       <div className="fr">
@@ -73,15 +82,7 @@ export function KontaktForm() {
           placeholder="Was möchtest du mit uns teilen?"
         />
       </div>
-      <button
-        type="submit"
-        className="bform"
-        disabled={sent}
-        style={sent ? { background: "#2A3E4F" } : undefined}
-      >
-        {!sent && <SendIcon />}
-        {sent ? "✓ Gesendet – wir melden uns bei dir!" : "Jetzt Verbindung spüren"}
-      </button>
+      <KontaktSubmitButton />
     </form>
   );
 }

@@ -61,7 +61,9 @@ export type CustomerRecord = {
   lastName: string;
   phone: string | null;
   registrationCount: number;
+  inquiryCount: number;
   lastRegistrationAt: string;
   courses: string[];
+  inquirySources: string[];
   latestMessage: string | null;
 };

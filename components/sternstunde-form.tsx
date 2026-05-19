@@ -1,32 +1,44 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { submitPublicInquiryAction } from "@/app/contact-actions";
 import { SendIcon } from "./icons/send-icon";
 
-export function SternstundeForm() {
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState(false);
+const initialState = { ok: false, error: null };
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const name = String(fd.get("name") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const phone = String(fd.get("phone") || "").trim();
-    const msg = String(fd.get("message") || "").trim();
-    if (!name || !email || !phone || msg.length < 3) {
-      setError(true);
-      return;
-    }
-    setError(false);
-    setSent(true);
-  }
+function SternstundeSubmitButton() {
+  const { pending } = useFormStatus();
 
   return (
-    <form className="sfw" onSubmit={onSubmit} noValidate>
-      {error ? (
+    <button
+      type="submit"
+      className="bform"
+      disabled={pending}
+      style={pending ? { background: "#2A3E4F" } : undefined}
+    >
+      {!pending && <SendIcon />}
+      {pending
+        ? "Wird gesendet …"
+        : "🌾 Buche deine Sternstunde – Dein erster Schritt zu dir"}
+    </button>
+  );
+}
+
+export function SternstundeForm() {
+  const [state, formAction] = useActionState(submitPublicInquiryAction, initialState);
+
+  return (
+    <form className="sfw" action={formAction} noValidate>
+      <input type="hidden" name="source" value="sternstunde" />
+      {state.error ? (
         <p className="form-inline-error" role="alert">
-          Bitte Name, E-Mail und Telefon angeben und eine kurze Nachricht schreiben.
+          {state.error}
+        </p>
+      ) : null}
+      {state.ok ? (
+        <p className="form-inline-success" role="status">
+          Danke, deine Anfrage wurde gesendet. Wir melden uns bei dir.
         </p>
       ) : null}
       <div className="fr">
@@ -59,17 +71,7 @@ export function SternstundeForm() {
           placeholder="Was bewegt dich? Was suchst du?"
         />
       </div>
-      <button
-        type="submit"
-        className="bform"
-        disabled={sent}
-        style={sent ? { background: "#2A3E4F" } : undefined}
-      >
-        {!sent && <SendIcon />}
-        {sent
-          ? "✓ Gesendet – wir freuen uns auf die Begegnung!"
-          : "🌾 Buche deine Sternstunde – Dein erster Schritt zu dir"}
-      </button>
+      <SternstundeSubmitButton />
     </form>
   );
 }

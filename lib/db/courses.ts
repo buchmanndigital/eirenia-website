@@ -311,7 +311,7 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
   }
 
   await ensureDatabaseReady();
-  const result = await sql<{
+  const registrations = await sql<{
     first_name: string;
     last_name: string;
     email: string;
@@ -332,9 +332,29 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
     JOIN courses c ON c.id = r.course_id
     ORDER BY r.created_at DESC
   `;
+  const inquiries = await sql<{
+    source: string;
+    first_name: string;
+    last_name: string | null;
+    email: string;
+    phone: string | null;
+    message: string | null;
+    created_at: Date | string;
+  }>`
+    SELECT
+      source,
+      first_name,
+      last_name,
+      email,
+      phone,
+      message,
+      created_at
+    FROM contact_inquiries
+    ORDER BY created_at DESC
+  `;
 
   const byEmail = new Map<string, CustomerRecord>();
-  for (const row of result.rows) {
+  for (const row of registrations.rows) {
     const key = row.email.toLowerCase();
     const createdAt = normalizeDate(row.created_at) ?? new Date(0).toISOString();
     const existing = byEmail.get(key);
@@ -345,14 +365,19 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
         lastName: row.last_name,
         phone: row.phone,
         registrationCount: 1,
+        inquiryCount: 0,
         lastRegistrationAt: createdAt,
         courses: [row.course_title],
+        inquirySources: [],
         latestMessage: row.message,
       });
       continue;
     }
 
     existing.registrationCount += 1;
+    if (new Date(createdAt).getTime() > new Date(existing.lastRegistrationAt).getTime()) {
+      existing.lastRegistrationAt = createdAt;
+    }
     if (!existing.phone && row.phone) {
       existing.phone = row.phone;
     }
@@ -364,10 +389,56 @@ export async function getCustomerRecords(): Promise<CustomerRecord[]> {
     }
   }
 
+  for (const row of inquiries.rows) {
+    const key = row.email.toLowerCase();
+    const createdAt = normalizeDate(row.created_at) ?? new Date(0).toISOString();
+    const sourceLabel = inquirySourceLabel(row.source);
+    const existing = byEmail.get(key);
+    if (!existing) {
+      byEmail.set(key, {
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name ?? "",
+        phone: row.phone,
+        registrationCount: 0,
+        inquiryCount: 1,
+        lastRegistrationAt: createdAt,
+        courses: [],
+        inquirySources: [sourceLabel],
+        latestMessage: row.message,
+      });
+      continue;
+    }
+
+    existing.inquiryCount += 1;
+    if (new Date(createdAt).getTime() > new Date(existing.lastRegistrationAt).getTime()) {
+      existing.lastRegistrationAt = createdAt;
+    }
+    if (!existing.phone && row.phone) {
+      existing.phone = row.phone;
+    }
+    if (sourceLabel && !existing.inquirySources.includes(sourceLabel)) {
+      existing.inquirySources.push(sourceLabel);
+    }
+    if (!existing.latestMessage && row.message) {
+      existing.latestMessage = row.message;
+    }
+  }
+
   return Array.from(byEmail.values()).sort(
     (a, b) =>
       new Date(b.lastRegistrationAt).getTime() - new Date(a.lastRegistrationAt).getTime(),
   );
+}
+
+function inquirySourceLabel(source: string) {
+  if (source === "sternstunde") {
+    return "Sternstunde";
+  }
+  if (source === "coaching") {
+    return "1:1 Coaching";
+  }
+  return "Kontakt";
 }
 
 function programmeToCourse(programme: (typeof programmes)[number]): Course {

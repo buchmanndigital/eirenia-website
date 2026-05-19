@@ -37,10 +37,15 @@ export default async function CrmPage() {
                   </span>
                   <p>
                     {customer.registrationCount} Anmeldung
-                    {customer.registrationCount === 1 ? "" : "en"} · zuletzt{" "}
+                    {customer.registrationCount === 1 ? "" : "en"} ·{" "}
+                    {customer.inquiryCount} Anfrage
+                    {customer.inquiryCount === 1 ? "" : "n"} · zuletzt{" "}
                     {new Date(customer.lastRegistrationAt).toLocaleDateString("de-DE")}
                   </p>
-                  <p>{customer.courses.join(" · ")}</p>
+                  {customer.courses.length > 0 ? <p>{customer.courses.join(" · ")}</p> : null}
+                  {customer.inquirySources.length > 0 ? (
+                    <p>{customer.inquirySources.join(" · ")}</p>
+                  ) : null}
                   {customer.latestMessage ? <p>„{customer.latestMessage}“</p> : null}
                 </div>
               </div>

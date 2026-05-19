@@ -15,6 +15,15 @@ export type RegistrationMailPayload = {
   coachName: string;
 };
 
+export type ContactInquiryMailPayload = {
+  sourceLabel: string;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  phone: string;
+  message: string;
+};
+
 function siteOrigin() {
   const base = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (base) {
@@ -103,6 +112,55 @@ function smtpErrorDetails(err: unknown) {
 
 function fromAddress() {
   return process.env.EMAIL_FROM?.trim() || process.env.SMTP_USER || "noreply@localhost";
+}
+
+function contactRecipient() {
+  return process.env.CONTACT_EMAIL_TO?.trim() || "info@eirenia.de";
+}
+
+export async function sendContactInquiryEmail(payload: ContactInquiryMailPayload) {
+  const transport = createSmtpTransport();
+  if (!transport) {
+    const missing = [
+      !process.env.SMTP_HOST?.trim() && "SMTP_HOST",
+      !process.env.SMTP_USER?.trim() && "SMTP_USER",
+      !process.env.SMTP_PASS?.trim() && "SMTP_PASS",
+    ].filter(Boolean);
+    console.warn(
+      "[contact-mail] SMTP nicht vollständig. Fehlt evtl.:",
+      missing.join(", ") || "Port ungültig",
+      "| Zusammenfassung:",
+      JSON.stringify(smtpEnvSummary()),
+    );
+    throw new Error("SMTP ist nicht vollständig konfiguriert.");
+  }
+
+  const fullName = [payload.firstName, payload.lastName].filter(Boolean).join(" ");
+  const text = [
+    `Neue Anfrage: ${payload.sourceLabel}`,
+    "",
+    `Name: ${fullName}`,
+    `E-Mail: ${payload.email}`,
+    `Telefon: ${payload.phone}`,
+    "",
+    "Nachricht:",
+    payload.message,
+  ].join("\n");
+
+  try {
+    await transport.sendMail({
+      from: fromAddress(),
+      to: contactRecipient(),
+      replyTo: payload.email,
+      subject: `[EIRENIA] ${payload.sourceLabel}: ${fullName}`,
+      text,
+    });
+  } catch (err) {
+    console.error("[contact-mail] Mail fehlgeschlagen:", smtpErrorDetails(err));
+    throw err;
+  }
+
+  console.info("[contact-mail] Anfrage-Mail versendet.", JSON.stringify(smtpEnvSummary()));
 }
 
 export async function sendRegistrationEmails(payload: RegistrationMailPayload) {

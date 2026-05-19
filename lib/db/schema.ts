@@ -83,6 +83,19 @@ export async function ensureDatabaseReady() {
     )
   `;
 
+  await sql`
+    CREATE TABLE IF NOT EXISTS contact_inquiries (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL CHECK (source IN ('sternstunde', 'kontakt', 'coaching')),
+      first_name TEXT NOT NULL,
+      last_name TEXT,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   await seedProgrammeCatalog();
 }
 
