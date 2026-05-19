@@ -2998,6 +2998,17 @@ footer {
   margin-bottom: 0.35rem;
 }
 
+.admin-course-meta {
+  display: inline-flex !important;
+  width: fit-content;
+  margin-top: 0.45rem;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--ocean) !important;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.78rem !important;
+}
+
 .admin-table-main-link {
   flex: 1;
   min-width: 0;
@@ -3012,19 +3023,42 @@ footer {
   color: var(--gold);
 }
 
-.admin-status-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  max-width: min(100%, 280px);
+.admin-status-segments {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  border-radius: 999px;
+  background: rgba(250, 248, 242, 0.78);
+  padding: 0.2rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.admin-status-hint {
-  margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.35;
+.admin-status-segments button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
   color: var(--tm2);
-  opacity: 0.92;
+  padding: 0.55rem 0.85rem;
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-status-segments button:hover {
+  color: var(--ocean);
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.admin-status-segments button.is-active {
+  background: var(--ocean);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(42, 62, 79, 0.14);
 }
 
 .admin-inline-form button.admin-button-quiet {

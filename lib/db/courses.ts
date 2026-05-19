@@ -36,6 +36,7 @@ type CourseRow = {
   expectations: string[] | string;
   donation_text: string;
   status: CourseStatus;
+  registration_count?: number | string;
   created_at: string;
   updated_at: string;
 };
@@ -220,9 +221,12 @@ export async function getCoursesForUser(userId: string, isAdmin: boolean) {
           u.first_name AS coach_first_name,
           u.last_name AS coach_last_name,
           u.bio AS coach_bio,
-          u.photo_url AS coach_photo_url
+          u.photo_url AS coach_photo_url,
+          COUNT(r.id) AS registration_count
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
+        LEFT JOIN course_registrations r ON r.course_id = c.id
+        GROUP BY c.id, u.name, u.first_name, u.last_name, u.bio, u.photo_url
         ORDER BY c.course_date ASC NULLS LAST, c.updated_at DESC
       `
     : await sql<CourseRow>`
@@ -232,10 +236,13 @@ export async function getCoursesForUser(userId: string, isAdmin: boolean) {
           u.first_name AS coach_first_name,
           u.last_name AS coach_last_name,
           u.bio AS coach_bio,
-          u.photo_url AS coach_photo_url
+          u.photo_url AS coach_photo_url,
+          COUNT(r.id) AS registration_count
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
+        LEFT JOIN course_registrations r ON r.course_id = c.id
         WHERE c.coach_id = ${userId}
+        GROUP BY c.id, u.name, u.first_name, u.last_name, u.bio, u.photo_url
         ORDER BY c.course_date ASC NULLS LAST, c.updated_at DESC
       `;
 
@@ -386,6 +393,7 @@ function programmeToCourse(programme: (typeof programmes)[number]): Course {
     expectations: programme.expectations,
     donationText,
     status: "published",
+    registrationCount: 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -419,6 +427,7 @@ function mapCourseRow(row: CourseRow): Course {
     expectations,
     donationText: row.donation_text,
     status: row.status,
+    registrationCount: Number(row.registration_count ?? 0),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

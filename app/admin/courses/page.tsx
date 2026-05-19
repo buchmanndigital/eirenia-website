@@ -4,6 +4,13 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { CourseStatusForm } from "@/components/admin/course-status-form";
 import { requireSession } from "@/lib/auth/session";
 import { getCoursesForUser } from "@/lib/db/courses";
+import type { CourseStatus } from "@/lib/db/types";
+
+const statusLabels: Record<CourseStatus, string> = {
+  draft: "Entwurf",
+  pending: "Prüfung",
+  published: "Veröffentlicht",
+};
 
 export default async function CoursesPage() {
   const user = await requireSession();
@@ -41,7 +48,11 @@ export default async function CoursesPage() {
                     {course.emoji} {course.title}
                   </strong>
                   <span>
-                    {course.coachName} · {course.location} · {course.status}
+                    {course.coachName} · {course.location} · {statusLabels[course.status]}
+                  </span>
+                  <span className="admin-course-meta">
+                    {course.registrationCount} Anmeldung
+                    {course.registrationCount === 1 ? "" : "en"}
                   </span>
                   <p>{course.subtitle}</p>
                 </div>

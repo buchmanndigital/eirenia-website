@@ -6,20 +6,27 @@ type CourseStatusFormProps = {
 };
 
 export function CourseStatusForm({ course }: CourseStatusFormProps) {
+  const options = [
+    { value: "draft", label: "Entwurf" },
+    { value: "pending", label: "Prüfung" },
+    { value: "published", label: "Veröffentlicht" },
+  ] as const;
+
   return (
-    <div className="admin-status-block">
-      <p className="admin-status-hint">
-        Entwurf = nicht öffentlich, keine Anmeldungen. Veröffentlicht = sichtbar auf der Website.
-      </p>
-      <form action={approveCourseAction} className="admin-inline-form">
-        <input type="hidden" name="courseId" value={course.id} />
-        <select name="status" defaultValue={course.status} aria-label="Kursstatus">
-          <option value="draft">Entwurf</option>
-          <option value="pending">Zur Freigabe</option>
-          <option value="published">Veröffentlicht</option>
-        </select>
-        <button type="submit">Aktualisieren</button>
-      </form>
-    </div>
+    <form action={approveCourseAction} className="admin-status-segments" aria-label="Kursstatus">
+      <input type="hidden" name="courseId" value={course.id} />
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="submit"
+          name="status"
+          value={option.value}
+          className={course.status === option.value ? "is-active" : undefined}
+          aria-pressed={course.status === option.value}
+        >
+          {option.label}
+        </button>
+      ))}
+    </form>
   );
 }

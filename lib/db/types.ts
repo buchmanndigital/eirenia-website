@@ -38,6 +38,7 @@ export type Course = {
   expectations: string[];
   donationText: string;
   status: CourseStatus;
+  registrationCount: number;
   createdAt: string;
   updatedAt: string;
 };
