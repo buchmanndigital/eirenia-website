@@ -2339,6 +2339,29 @@ footer {
     padding-left: max(0.85rem, env(safe-area-inset-left, 0px));
     padding-right: max(0.85rem, env(safe-area-inset-right, 0px));
   }
+  .nl {
+    gap: 9px;
+    min-width: 0;
+  }
+  .nl svg {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+  .lt .wm {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+  .lt .tg {
+    max-width: 10.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.2em;
+  }
+  .nr {
+    gap: 0.35rem;
+  }
   .nlinks {
     display: none;
   }
@@ -2359,7 +2382,59 @@ footer {
   #hero {
     padding-left: max(0.7rem, env(safe-area-inset-left, 0px));
     padding-right: max(0.7rem, env(safe-area-inset-right, 0px));
-    padding-bottom: 4rem;
+    padding-top: 2.5rem;
+    padding-bottom: 3.5rem;
+    min-height: calc(100svh - 72px);
+  }
+
+  .hcl {
+    margin-bottom: 1.1rem;
+  }
+
+  .hero-logo-svg {
+    width: 94px;
+    height: 94px;
+  }
+
+  .hbn {
+    font-size: clamp(2.75rem, 17vw, 4.2rem);
+    letter-spacing: 0.035em;
+  }
+
+  .hbt {
+    margin-bottom: 1.6rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+  }
+
+  .hq {
+    margin-bottom: 2rem;
+    font-size: 1.18rem;
+  }
+
+  .hh {
+    font-size: clamp(1.55rem, 8vw, 2.05rem);
+  }
+
+  .hs {
+    margin-bottom: 2rem;
+  }
+
+  .hbtns {
+    width: 100%;
+    max-width: 21rem;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .bf,
+  .bo,
+  .boc {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   #mission,
@@ -2389,6 +2464,27 @@ footer {
     padding: 0.55rem 0.65rem;
   }
 
+  .programme-tools {
+    gap: 0.8rem;
+  }
+
+  .calendar-strip--dates {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .calendar-strip--dates button {
+    min-width: 3.55rem;
+  }
+
+  .location-chips--venues {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
   .spbox {
     padding: 1rem 0.8rem;
     gap: 0.75rem;
@@ -2416,6 +2512,13 @@ footer {
   .sfw,
   .kcard {
     padding: 2rem 1.05rem;
+  }
+
+  .bform {
+    border-radius: 18px;
+    line-height: 1.35;
+    min-height: 52px;
+    white-space: normal;
   }
 
   .legal-page {
@@ -3147,7 +3250,34 @@ footer {
 
   .admin-main,
   .course-page {
-    padding: 1.5rem;
+    padding: 1.25rem max(0.9rem, env(safe-area-inset-right, 0px)) 4rem
+      max(0.9rem, env(safe-area-inset-left, 0px));
+  }
+
+  .course-page {
+    margin-top: -72px;
+    padding-top: 5.75rem;
+  }
+
+  .course-back {
+    margin: 0 0 1.25rem;
+    letter-spacing: 0.08em;
+  }
+
+  .course-hero {
+    padding: 2.25rem 1rem;
+  }
+
+  .course-hero h1 {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+  }
+
+  .course-card,
+  .course-donation,
+  .course-map-card,
+  .course-register-card {
+    padding: 1.25rem;
+    border-radius: 12px;
   }
 
   .admin-table-row,

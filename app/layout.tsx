@@ -1,27 +1,35 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { Cormorant, Lato, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["300", "400", "700"],
+const lato = localFont({
+  src: [
+    { path: "./fonts/lato-300.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/lato-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/lato-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-lato",
+  display: "swap",
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+const playfair = localFont({
+  src: [
+    { path: "./fonts/playfair-normal.woff2", weight: "400 700", style: "normal" },
+    { path: "./fonts/playfair-italic.woff2", weight: "400 700", style: "italic" },
+  ],
   variable: "--font-playfair",
+  display: "swap",
 });
 
-const cormorant = Cormorant({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
+const cormorant = localFont({
+  src: [
+    { path: "./fonts/cormorant-normal.woff2", weight: "300 500", style: "normal" },
+    { path: "./fonts/cormorant-italic.woff2", weight: "300 500", style: "italic" },
+  ],
   variable: "--font-cormorant",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

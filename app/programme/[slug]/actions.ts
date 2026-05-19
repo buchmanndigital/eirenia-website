@@ -14,25 +14,13 @@ function value(formData: FormData, key: string) {
 
 export async function registerForCourseAction(formData: FormData) {
   const slug = value(formData, "slug");
-
-  if (!hasDatabase) {
-    redirect(`/programme/${slug}?sent=1`);
-  }
-
-  await ensureDatabaseReady();
-  const target = await getPublicCourseRegistrationTarget(slug);
-
-  if (!target) {
-    redirect(`/programme/${slug}?error=missing`);
-  }
-
   const firstName = value(formData, "firstName");
   const lastName = value(formData, "lastName");
   const email = value(formData, "email");
   const phone = value(formData, "phone");
   const message = value(formData, "message");
 
-  if (!firstName || !lastName || !email || !phone) {
+  if (!firstName || !lastName || !email || !phone || formData.get("terms") !== "on") {
     redirect(`/programme/${encodeURIComponent(slug)}?error=pflicht`);
   }
 
@@ -42,6 +30,18 @@ export async function registerForCourseAction(formData: FormData) {
 
   const phoneValue = phone || null;
   const messageValue = message || null;
+
+  if (!hasDatabase) {
+    console.error("[registerForCourseAction] Keine Datenbank-Env geladen.");
+    redirect(`/programme/${encodeURIComponent(slug)}?error=missing`);
+  }
+
+  await ensureDatabaseReady();
+  const target = await getPublicCourseRegistrationTarget(slug);
+
+  if (!target) {
+    redirect(`/programme/${slug}?error=missing`);
+  }
 
   await sql`
     INSERT INTO course_registrations (
@@ -61,7 +61,7 @@ export async function registerForCourseAction(formData: FormData) {
       ${email},
       ${phoneValue},
       ${messageValue},
-      ${formData.get("terms") === "on"}
+      ${true}
     )
   `;
 

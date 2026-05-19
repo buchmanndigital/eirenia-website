@@ -101,6 +101,7 @@ export default function ImpressumPage() {
               <strong>Verbraucherschlichtungsstellen</strong> in Deutschland bestehen weiterhin auf
               Grundlage des Verbraucherstreitbeilegungsgesetzes (VSBG); zuständige Stellen und
               Verfahren richten sich nach Art des Streitfalls. Wir sind <strong>nicht verpflichtet</strong> und
+              {" "}
               <strong>nicht bereit</strong>, an einem Streitbeilegungsverfahren vor einer
               Verbraucherschlichtungsstelle teilzunehmen.
             </p>
