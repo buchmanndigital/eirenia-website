@@ -2750,8 +2750,12 @@ footer {
 }
 
 .course-coach-photo {
+  display: block;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
-  object-fit: cover;
+  background-size: cover;
+  background-position: center;
   border: 2px solid rgba(201, 168, 76, 0.45);
   box-shadow: 0 6px 24px rgba(42, 62, 79, 0.12);
 }
@@ -2769,6 +2773,25 @@ footer {
 
 .course-register-head p {
   color: var(--ts);
+  line-height: 1.5;
+}
+
+.course-coach-profile {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.18);
+}
+
+.course-coach-profile strong {
+  color: var(--ocean);
+  font-size: 0.92rem;
+}
+
+.course-coach-profile small {
+  color: var(--tm2);
+  font-size: 0.82rem;
   line-height: 1.5;
 }
 
@@ -3090,6 +3113,10 @@ footer {
   border-top: 1px solid rgba(201, 168, 76, 0.16);
 }
 
+.admin-table-row--crm {
+  align-items: flex-start;
+}
+
 .admin-table-row strong {
   display: block;
   color: var(--ocean);
@@ -3108,6 +3135,32 @@ footer {
   align-items: center;
   gap: 0.65rem;
   flex-wrap: wrap;
+}
+
+.admin-person-row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.admin-avatar {
+  display: inline-flex !important;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  color: var(--gold) !important;
+  font-family: var(--font-playfair), serif;
+  font-size: 1.2rem !important;
+}
+
+.admin-avatar--empty {
+  background: rgba(201, 168, 76, 0.1);
 }
 
 .admin-inline-form button {

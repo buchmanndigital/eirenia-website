@@ -9,8 +9,11 @@ type UserRow = {
   password_hash: string;
   role: UserRole;
   status: UserStatus;
+  first_name: string | null;
+  last_name: string | null;
   phone: string | null;
   bio: string | null;
+  photo_url: string | null;
   created_at: string;
 };
 
@@ -60,6 +63,19 @@ export async function getCoachAccounts() {
   return result.rows.map((row) => mapUser(rowWithoutPassword(row)));
 }
 
+export async function getCoachAccount(id: string) {
+  if (!hasDatabase) {
+    return null;
+  }
+  await ensureDatabaseReady();
+  const result = await sql<UserRow>`
+    SELECT * FROM admin_users
+    WHERE id = ${id} AND role = 'coach'
+    LIMIT 1
+  `;
+  return result.rows[0] ? mapUser(rowWithoutPassword(result.rows[0])) : null;
+}
+
 export function rowWithoutPassword(row: UserRow) {
   const { password_hash: _passwordHash, ...safeRow } = row;
   void _passwordHash;
@@ -70,11 +86,14 @@ export function mapUser(row: Omit<UserRow, "password_hash">): AdminUser {
   return {
     id: row.id,
     name: row.name,
+    firstName: row.first_name,
+    lastName: row.last_name,
     email: row.email,
     role: row.role,
     status: row.status,
     phone: row.phone,
     bio: row.bio,
+    photoUrl: row.photo_url,
     createdAt: row.created_at,
   };
 }

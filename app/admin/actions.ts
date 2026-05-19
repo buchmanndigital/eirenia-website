@@ -63,9 +63,11 @@ export async function registerCoachAction(formData: FormData) {
   }
 
   await ensureDatabaseReady();
+  const firstName = name.split(" ")[0] || name;
+  const lastName = name.split(" ").slice(1).join(" ") || null;
   await sql`
     INSERT INTO admin_users (
-      id, name, email, password_hash, role, status, phone, bio
+      id, name, email, password_hash, role, status, first_name, last_name, phone, bio
     ) VALUES (
       ${crypto.randomUUID()},
       ${name},
@@ -73,6 +75,8 @@ export async function registerCoachAction(formData: FormData) {
       ${await hashPassword(password)},
       'coach',
       'pending',
+      ${firstName},
+      ${lastName},
       ${phone || null},
       ${bio || null}
     )
@@ -115,6 +119,117 @@ export async function updateCoachStatusAction(formData: FormData) {
   revalidatePath("/");
 
   redirect("/admin/coaches?saved=1");
+}
+
+export async function upsertCoachAction(formData: FormData) {
+  requireDatabase();
+  await requireAdmin();
+  await ensureDatabaseReady();
+
+  const coachId = value(formData, "coachId");
+  const firstName = value(formData, "firstName");
+  const lastName = value(formData, "lastName");
+  const email = value(formData, "email").toLowerCase();
+  const phone = value(formData, "phone");
+  const bio = value(formData, "bio");
+  const photoUrl = value(formData, "photoUrl");
+  const status = value(formData, "status");
+  const password = value(formData, "password");
+  const name = [firstName, lastName].filter(Boolean).join(" ").trim();
+
+  const targetPath = coachId ? `/admin/coaches/${coachId}` : "/admin/coaches/new";
+  if (!firstName || !lastName || !email || !["pending", "active", "blocked"].includes(status)) {
+    redirect(`${targetPath}?error=invalid`);
+  }
+
+  if (!coachId && password.length < 8) {
+    redirect(`${targetPath}?error=password`);
+  }
+
+  if (coachId) {
+    const existing = await sql<{ id: string }>`
+      SELECT id FROM admin_users WHERE id = ${coachId} AND role = 'coach' LIMIT 1
+    `;
+    if (!existing.rows[0]) {
+      redirect("/admin/coaches?error=no-rows");
+    }
+
+    if (password) {
+      if (password.length < 8) {
+        redirect(`${targetPath}?error=password`);
+      }
+      await sql`
+        UPDATE admin_users SET
+          first_name = ${firstName},
+          last_name = ${lastName},
+          name = ${name},
+          email = ${email},
+          phone = ${phone || null},
+          bio = ${bio || null},
+          photo_url = ${photoUrl || null},
+          status = ${status},
+          password_hash = ${await hashPassword(password)}
+        WHERE id = ${coachId} AND role = 'coach'
+      `;
+    } else {
+      await sql`
+        UPDATE admin_users SET
+          first_name = ${firstName},
+          last_name = ${lastName},
+          name = ${name},
+          email = ${email},
+          phone = ${phone || null},
+          bio = ${bio || null},
+          photo_url = ${photoUrl || null},
+          status = ${status}
+        WHERE id = ${coachId} AND role = 'coach'
+      `;
+    }
+
+    revalidatePath("/admin/coaches");
+    revalidatePath(`/admin/coaches/${coachId}`);
+    revalidatePath("/admin/courses");
+    revalidatePath("/");
+    const courseRows = await sql<{ slug: string }>`
+      SELECT slug FROM courses WHERE coach_id = ${coachId}
+    `;
+    for (const row of courseRows.rows) {
+      revalidatePath(`/programme/${row.slug}`);
+    }
+    redirect(`/admin/coaches/${coachId}?saved=1`);
+  }
+
+  const id = crypto.randomUUID();
+  await sql`
+    INSERT INTO admin_users (
+      id,
+      name,
+      first_name,
+      last_name,
+      email,
+      password_hash,
+      role,
+      status,
+      phone,
+      bio,
+      photo_url
+    ) VALUES (
+      ${id},
+      ${name},
+      ${firstName},
+      ${lastName},
+      ${email},
+      ${await hashPassword(password)},
+      'coach',
+      ${status},
+      ${phone || null},
+      ${bio || null},
+      ${photoUrl || null}
+    )
+  `;
+
+  revalidatePath("/admin/coaches");
+  redirect(`/admin/coaches/${id}?saved=1`);
 }
 
 export async function upsertCourseAction(formData: FormData) {

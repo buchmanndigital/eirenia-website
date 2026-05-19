@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { OsmMap } from "@/components/osm-map";
 import { getPublicCourse } from "@/lib/db/courses";
@@ -27,9 +26,7 @@ export default async function ProgrammeDetailPage({
     notFound();
   }
 
-  const coachPhotoSrc = course.coachName.toLowerCase().includes("andreas")
-    ? "/andreas-zettel.jpeg"
-    : null;
+  const coachPhotoSrc = course.coachPhotoUrl;
 
   const courseMapPlaces = Array.from(
     new Set(
@@ -126,12 +123,11 @@ export default async function ProgrammeDetailPage({
           <div className="course-register-head">
             {coachPhotoSrc ? (
               <div className="course-coach-photo-wrap">
-                <Image
-                  src={coachPhotoSrc}
-                  alt={course.coachName}
-                  width={96}
-                  height={96}
+                <span
                   className="course-coach-photo"
+                  style={{ backgroundImage: `url(${coachPhotoSrc})` }}
+                  role="img"
+                  aria-label={course.coachName}
                 />
               </div>
             ) : null}
@@ -140,6 +136,15 @@ export default async function ProgrammeDetailPage({
             <p>
               Melde dich jetzt für <strong>{course.title}</strong> an.
             </p>
+            {(course.coachFirstName || course.coachLastName || course.coachBio) && (
+              <div className="course-coach-profile">
+                <strong>
+                  {[course.coachFirstName, course.coachLastName].filter(Boolean).join(" ") ||
+                    course.coachName}
+                </strong>
+                {course.coachBio ? <small>{course.coachBio}</small> : null}
+              </div>
+            )}
           </div>
           {query.error === "pflicht" ? (
             <div className="admin-alert" role="alert">

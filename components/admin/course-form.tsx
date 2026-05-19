@@ -13,6 +13,9 @@ type CourseFormProps = {
 
 export function CourseForm({ user, coaches, course }: CourseFormProps) {
   const isAdmin = user.role === "admin";
+  const selectableCoaches = coaches.filter(
+    (coach) => coach.status === "active" || coach.id === course?.coachId,
+  );
 
   return (
     <form action={upsertCourseAction} className="admin-card admin-form">
@@ -22,13 +25,11 @@ export function CourseForm({ user, coaches, course }: CourseFormProps) {
         <label>
           Coach
           <select name="coachId" defaultValue={course?.coachId || user.id}>
-            {coaches
-              .filter((coach) => coach.status === "active")
-              .map((coach) => (
-                <option key={coach.id} value={coach.id}>
-                  {coach.name} ({coach.email})
-                </option>
-              ))}
+            {selectableCoaches.map((coach) => (
+              <option key={coach.id} value={coach.id}>
+                {coach.name} ({coach.email})
+              </option>
+            ))}
           </select>
         </label>
       )}

@@ -19,10 +19,27 @@ export async function ensureDatabaseReady() {
       password_hash TEXT NOT NULL,
       role TEXT NOT NULL CHECK (role IN ('admin', 'coach')),
       status TEXT NOT NULL CHECK (status IN ('pending', 'active', 'blocked')),
+      first_name TEXT,
+      last_name TEXT,
       phone TEXT,
       bio TEXT,
+      photo_url TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `;
+
+  await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS first_name TEXT`;
+  await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS last_name TEXT`;
+  await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS photo_url TEXT`;
+  await sql`
+    UPDATE admin_users
+    SET
+      first_name = COALESCE(first_name, NULLIF(split_part(name, ' ', 1), '')),
+      last_name = COALESCE(
+        last_name,
+        NULLIF(regexp_replace(name, '^\\S+\\s*', ''), '')
+      )
+    WHERE first_name IS NULL OR last_name IS NULL
   `;
 
   await sql`
@@ -134,7 +151,7 @@ async function seedProgrammeCatalog() {
     const meta = SEED_COACH_META["Andreas Zettel"]!;
     await sql`
       INSERT INTO admin_users (
-        id, name, email, password_hash, role, status, phone, bio
+        id, name, email, password_hash, role, status, first_name, last_name, phone, bio, photo_url
       ) VALUES (
         ${meta.id},
         'Andreas Zettel',
@@ -142,10 +159,23 @@ async function seedProgrammeCatalog() {
         ${await hashPassword(andreasPassword)},
         'admin',
         'active',
+        'Andreas',
+        'Zettel',
         NULL,
-        'Friedensträger. Begleiter. Mensch.'
+        'Friedensträger. Begleiter. Mensch.',
+        '/andreas-zettel.jpeg'
       )
       ON CONFLICT (id) DO NOTHING
+    `;
+  } else {
+    await sql`
+      UPDATE admin_users
+      SET
+        first_name = COALESCE(first_name, 'Andreas'),
+        last_name = COALESCE(last_name, 'Zettel'),
+        bio = COALESCE(bio, 'Friedensträger. Begleiter. Mensch.'),
+        photo_url = COALESCE(photo_url, '/andreas-zettel.jpeg')
+      WHERE id = ${existingAndreas.rows[0]!.id}
     `;
   }
 
@@ -163,7 +193,7 @@ async function seedProgrammeCatalog() {
     if (existing.rowCount === 0) {
       await sql`
         INSERT INTO admin_users (
-          id, name, email, password_hash, role, status, phone, bio
+          id, name, email, password_hash, role, status, first_name, last_name, phone, bio, photo_url
         ) VALUES (
           ${meta.id},
           ${coachName},
@@ -171,6 +201,9 @@ async function seedProgrammeCatalog() {
           ${await hashPassword(crypto.randomUUID())},
           ${meta.role},
           'active',
+          ${coachName.split(" ")[0] || coachName},
+          ${coachName.split(" ").slice(1).join(" ") || null},
+          NULL,
           NULL,
           NULL
         )

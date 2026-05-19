@@ -5,11 +5,14 @@ export type CourseStatus = "draft" | "pending" | "published";
 export type AdminUser = {
   id: string;
   name: string;
+  firstName: string | null;
+  lastName: string | null;
   email: string;
   role: UserRole;
   status: UserStatus;
   phone: string | null;
   bio: string | null;
+  photoUrl: string | null;
   createdAt: string;
 };
 
@@ -17,6 +20,10 @@ export type Course = {
   id: string;
   coachId: string;
   coachName: string;
+  coachFirstName: string | null;
+  coachLastName: string | null;
+  coachBio: string | null;
+  coachPhotoUrl: string | null;
   title: string;
   slug: string;
   emoji: string;
@@ -45,4 +52,15 @@ export type CourseRegistration = {
   phone: string | null;
   message: string | null;
   createdAt: string;
+};
+
+export type CustomerRecord = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  registrationCount: number;
+  lastRegistrationAt: string;
+  courses: string[];
+  latestMessage: string | null;
 };

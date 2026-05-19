@@ -19,6 +19,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
           <Link href="/admin">Übersicht</Link>
           <Link href="/admin/courses">Kurse</Link>
           {user.role === "admin" && <Link href="/admin/coaches">Coaches</Link>}
+          {user.role === "admin" && <Link href="/admin/crm">Mini-CRM</Link>}
           <Link href="/admin/courses/new">Neuer Kurs</Link>
         </nav>
         <form action={logoutAction}>

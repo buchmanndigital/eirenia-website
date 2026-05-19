@@ -1,7 +1,7 @@
 import { getProgrammeBySlug, programmes } from "@/lib/programmes";
 import { ensureDatabaseReady } from "./schema";
 import { hasDatabase, sql } from "./connection";
-import type { Course, CourseRegistration, CourseStatus } from "./types";
+import type { Course, CourseRegistration, CourseStatus, CustomerRecord } from "./types";
 
 const donationText =
   "Diese Begegnung findet auf Spendenbasis statt. Du gibst, was sich für dich stimmig anfühlt – aus deinem Herzen heraus, ohne Verpflichtung, ohne Erwartung. Jeder ist willkommen, ganz gleich, was er mitbringt. Was zählt, ist deine Anwesenheit und dein offenes Herz.";
@@ -18,6 +18,10 @@ type CourseRow = {
   id: string;
   coach_id: string;
   coach_name: string | null;
+  coach_first_name: string | null;
+  coach_last_name: string | null;
+  coach_bio: string | null;
+  coach_photo_url: string | null;
   title: string;
   slug: string;
   emoji: string;
@@ -52,7 +56,11 @@ export async function getPublishedCourses(): Promise<Course[]> {
     const result = await sql<CourseRow>`
       SELECT
         c.*,
-        u.name AS coach_name
+        u.name AS coach_name,
+        u.first_name AS coach_first_name,
+        u.last_name AS coach_last_name,
+        u.bio AS coach_bio,
+        u.photo_url AS coach_photo_url
       FROM courses c
       INNER JOIN admin_users u ON u.id = c.coach_id
       WHERE c.status = 'published'
@@ -95,7 +103,11 @@ export async function getPublicCourse(slug: string): Promise<Course | null> {
     const result = await sql<CourseRow>`
       SELECT
         c.*,
-        u.name AS coach_name
+        u.name AS coach_name,
+        u.first_name AS coach_first_name,
+        u.last_name AS coach_last_name,
+        u.bio AS coach_bio,
+        u.photo_url AS coach_photo_url
       FROM courses c
       INNER JOIN admin_users u ON u.id = c.coach_id
       WHERE c.slug = ${slug}
@@ -202,13 +214,25 @@ export async function getCoursesForUser(userId: string, isAdmin: boolean) {
 
   const result = isAdmin
     ? await sql<CourseRow>`
-        SELECT c.*, u.name AS coach_name
+        SELECT
+          c.*,
+          u.name AS coach_name,
+          u.first_name AS coach_first_name,
+          u.last_name AS coach_last_name,
+          u.bio AS coach_bio,
+          u.photo_url AS coach_photo_url
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
         ORDER BY c.course_date ASC NULLS LAST, c.updated_at DESC
       `
     : await sql<CourseRow>`
-        SELECT c.*, u.name AS coach_name
+        SELECT
+          c.*,
+          u.name AS coach_name,
+          u.first_name AS coach_first_name,
+          u.last_name AS coach_last_name,
+          u.bio AS coach_bio,
+          u.photo_url AS coach_photo_url
         FROM courses c
         JOIN admin_users u ON u.id = c.coach_id
         WHERE c.coach_id = ${userId}
@@ -221,7 +245,13 @@ export async function getCoursesForUser(userId: string, isAdmin: boolean) {
 export async function getCourseForEditing(id: string) {
   await ensureDatabaseReady();
   const result = await sql<CourseRow>`
-    SELECT c.*, u.name AS coach_name
+    SELECT
+      c.*,
+      u.name AS coach_name,
+      u.first_name AS coach_first_name,
+      u.last_name AS coach_last_name,
+      u.bio AS coach_bio,
+      u.photo_url AS coach_photo_url
     FROM courses c
     JOIN admin_users u ON u.id = c.coach_id
     WHERE c.id = ${id}
@@ -268,11 +298,78 @@ export async function getCourseRegistrations(courseId: string) {
   );
 }
 
+export async function getCustomerRecords(): Promise<CustomerRecord[]> {
+  if (!hasDatabase) {
+    return [];
+  }
+
+  await ensureDatabaseReady();
+  const result = await sql<{
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string | null;
+    message: string | null;
+    created_at: string;
+    course_title: string;
+  }>`
+    SELECT
+      r.first_name,
+      r.last_name,
+      r.email,
+      r.phone,
+      r.message,
+      r.created_at,
+      c.title AS course_title
+    FROM course_registrations r
+    JOIN courses c ON c.id = r.course_id
+    ORDER BY r.created_at DESC
+  `;
+
+  const byEmail = new Map<string, CustomerRecord>();
+  for (const row of result.rows) {
+    const key = row.email.toLowerCase();
+    const existing = byEmail.get(key);
+    if (!existing) {
+      byEmail.set(key, {
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        phone: row.phone,
+        registrationCount: 1,
+        lastRegistrationAt: row.created_at,
+        courses: [row.course_title],
+        latestMessage: row.message,
+      });
+      continue;
+    }
+
+    existing.registrationCount += 1;
+    if (!existing.phone && row.phone) {
+      existing.phone = row.phone;
+    }
+    if (!existing.courses.includes(row.course_title)) {
+      existing.courses.push(row.course_title);
+    }
+    if (!existing.latestMessage && row.message) {
+      existing.latestMessage = row.message;
+    }
+  }
+
+  return Array.from(byEmail.values()).sort((a, b) =>
+    b.lastRegistrationAt.localeCompare(a.lastRegistrationAt),
+  );
+}
+
 function programmeToCourse(programme: (typeof programmes)[number]): Course {
   return {
     id: programme.slug,
     coachId: programme.slug.includes("andreas") ? "andreas-zettel" : "demo",
     coachName: programme.coachName,
+    coachFirstName: programme.coachName.split(" ")[0] || null,
+    coachLastName: programme.coachName.split(" ").slice(1).join(" ") || null,
+    coachBio: programme.coachName === "Andreas Zettel" ? "Friedensträger. Begleiter. Mensch." : null,
+    coachPhotoUrl: programme.coachName === "Andreas Zettel" ? "/andreas-zettel.jpeg" : null,
     title: programme.name,
     slug: programme.slug,
     emoji: programme.emoji,
@@ -302,6 +399,10 @@ function mapCourseRow(row: CourseRow): Course {
     id: row.id,
     coachId: row.coach_id,
     coachName: row.coach_name ?? "EIRENIA",
+    coachFirstName: row.coach_first_name,
+    coachLastName: row.coach_last_name,
+    coachBio: row.coach_bio,
+    coachPhotoUrl: row.coach_photo_url,
     title: row.title,
     slug: row.slug,
     emoji: row.emoji,
