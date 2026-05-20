@@ -16,6 +16,10 @@ function value(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
 }
 
+function isSecurePassword(password: string) {
+  return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+}
+
 function requireDatabase() {
   if (!hasDatabase) {
     throw new Error("Für den Admin-Bereich muss eine Vercel Postgres/Neon-Datenbank verbunden sein.");
@@ -57,8 +61,13 @@ export async function registerCoachAction(formData: FormData) {
   const phone = value(formData, "phone");
   const bio = value(formData, "bio");
   const password = value(formData, "password");
+  const passwordConfirm = value(formData, "passwordConfirm");
 
-  if (!name || !email || password.length < 8) {
+  if (!name || !email || !isSecurePassword(password)) {
+    redirect(`${COACH_REGISTER}?error=password`);
+  }
+
+  if (password !== passwordConfirm) {
     redirect(`${COACH_REGISTER}?error=invalid`);
   }
 
