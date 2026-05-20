@@ -7,7 +7,7 @@ import { getCoachAccounts } from "@/lib/db/users";
 export const dynamic = "force-dynamic";
 
 type CoachesPageProps = {
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{ saved?: string; deleted?: string; error?: string }>;
 };
 
 export default async function CoachesPage({ searchParams }: CoachesPageProps) {
@@ -29,6 +29,9 @@ export default async function CoachesPage({ searchParams }: CoachesPageProps) {
         </div>
         {q.saved && (
           <div className="admin-success">Status wurde gespeichert.</div>
+        )}
+        {q.deleted && (
+          <div className="admin-success">Coach wurde komplett gelöscht.</div>
         )}
         {q.error === "invalid" && (
           <div className="admin-alert">Ungültige Angaben. Bitte erneut versuchen.</div>

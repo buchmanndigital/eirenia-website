@@ -241,6 +241,41 @@ export async function upsertCoachAction(formData: FormData) {
   redirect(`/admin/coaches/${id}?saved=1`);
 }
 
+export async function deleteCoachAction(formData: FormData) {
+  requireDatabase();
+  await requireAdmin();
+  await ensureDatabaseReady();
+
+  const coachId = value(formData, "coachId");
+  if (!coachId) {
+    redirect("/admin/coaches?error=invalid");
+  }
+
+  const courseRows = await sql<{ slug: string }>`
+    SELECT slug FROM courses WHERE coach_id = ${coachId}
+  `;
+
+  const result = await sql`
+    DELETE FROM admin_users
+    WHERE id = ${coachId} AND role = 'coach'
+  `;
+
+  const deleted = (result.rowCount ?? 0) > 0;
+  if (!deleted) {
+    redirect("/admin/coaches?error=no-rows");
+  }
+
+  revalidatePath("/admin/coaches");
+  revalidatePath("/admin/courses");
+  revalidatePath("/admin/crm");
+  revalidatePath("/");
+  for (const row of courseRows.rows) {
+    revalidatePath(`/programme/${row.slug}`);
+  }
+
+  redirect("/admin/coaches?deleted=1");
+}
+
 export async function upsertCourseAction(formData: FormData) {
   const user = await requireSession();
   const courseId = value(formData, "courseId");

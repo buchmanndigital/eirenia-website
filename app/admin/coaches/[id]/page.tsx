@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { CoachDeleteForm } from "@/components/admin/coach-delete-form";
 import { CoachForm } from "@/components/admin/coach-form";
 import { requireAdmin } from "@/lib/auth/session";
 import { getCoachAccount } from "@/lib/db/users";
@@ -36,6 +37,7 @@ export default async function EditCoachPage({ params, searchParams }: EditCoachP
           <p className="admin-alert">Das neue Passwort muss mindestens 8 Zeichen haben.</p>
         )}
         <CoachForm coach={coach} />
+        <CoachDeleteForm coachId={coach.id} coachName={coach.name} />
       </section>
     </AdminShell>
   );
